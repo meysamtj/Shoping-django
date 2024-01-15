@@ -4,8 +4,9 @@ from django.urls import reverse
 from core.models import BaseModel, StatusMixin, Basemodeldiss
 from account.models import CustomUser
 from django.core.exceptions import ValidationError
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from django.utils import timezone
+
 
 class Category(BaseModel, StatusMixin):
     category_name = models.CharField(max_length=255)
@@ -36,8 +37,8 @@ class Product(BaseModel, StatusMixin):
     description = models.TextField()
     slug = models.SlugField(unique=True, blank=True, max_length=255)
     image = models.ImageField(upload_to="products")
-    color = models.CharField(max_length=255, default = "black")
-    price_discount = models.PositiveIntegerField(default = 0)
+    color = models.CharField(max_length=255, default="black")
+    price_discount = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ("-id",)
@@ -68,12 +69,14 @@ class Product(BaseModel, StatusMixin):
     def get_absolute_url(self):
         return reverse("home:detail", args=[self.slug])
 
+
 class Image(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name= "images")
-    image =  image = models.ImageField(upload_to="imgproducts")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
+    image = image = models.ImageField(upload_to="imgproducts")
 
     def __str__(self):
         return self.product.item_name
+
 
 class Discount(Basemodeldiss):
     TYPE_PERCENT = "percent"
@@ -97,6 +100,7 @@ class Discount(Basemodeldiss):
                 ("%(value)s برای تخفیف درصدی نباید مقدار درصد بیشتر از 100 باشد"),
                 params={"value": value},
             )
+
     expire = models.DateTimeField(default=timezone.now() + timedelta(days=1, minutes=5))
     type = models.CharField(max_length=10, choices=TYPE_SELECT, default=TYPE_PERCENT)
     max_dis = models.PositiveIntegerField(null=True, blank=True)
@@ -114,7 +118,6 @@ class Discount(Basemodeldiss):
         elif self.expire < timezone.now() + timedelta(days=1):
             raise ValidationError({'expire': (' تاریخ انقضا باید حداقل از  فردا شروع گردد')})
 
-        
 
 class Like(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="likes")
@@ -124,7 +127,7 @@ class Like(models.Model):
         return f'{self.user} liked {self.product}'
 
     def clean(self):
-        can = Like.objects.filter(user=self.user, product = self.product).exists()
+        can = Like.objects.filter(user=self.user, product=self.product).exists()
         if can:
             raise ValidationError({'user': (' یک بار با این کاربری لایک انجام شده است')})
 
