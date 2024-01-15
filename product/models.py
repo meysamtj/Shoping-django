@@ -1,10 +1,11 @@
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
-from core.models import BaseModel, StatusMixin
+from core.models import BaseModel, StatusMixin, Basemodeldiss
 from account.models import CustomUser
 from django.core.exceptions import ValidationError
-
+from datetime import datetime,timedelta
+from django.utils import timezone
 
 class Category(BaseModel, StatusMixin):
     category_name = models.CharField(max_length=255)
@@ -35,6 +36,8 @@ class Product(BaseModel, StatusMixin):
     description = models.TextField()
     slug = models.SlugField(unique=True, blank=True, max_length=255)
     image = models.ImageField(upload_to="products")
+    color = models.CharField(max_length=255, default = "black")
+    price_discount = models.PositiveIntegerField(default = 0)
 
     class Meta:
         ordering = ("-id",)
@@ -45,7 +48,7 @@ class Product(BaseModel, StatusMixin):
                 raise ValidationError({'discount': ('برای تخفیف عددی نباید مقدار  تخفیف بیشتر از مبلغ محصول باشد')})
 
     def __str__(self):
-        return self.item_name
+        return f'name : {self.item_name} | inventory : {self.inventory} '
 
     def like_count(self):
         return self.likes.count()
@@ -65,8 +68,14 @@ class Product(BaseModel, StatusMixin):
     def get_absolute_url(self):
         return reverse("home:detail", args=[self.slug])
 
+class Image(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name= "images")
+    image =  image = models.ImageField(upload_to="imgproducts")
 
-class Discount(models.Model):
+    def __str__(self):
+        return self.product.item_name
+
+class Discount(Basemodeldiss):
     TYPE_PERCENT = "percent"
     TYPE_NUMBER = "number"
     TYPE_SELECT = (
@@ -87,9 +96,8 @@ class Discount(models.Model):
             raise ValidationError(
                 ("%(value)s برای تخفیف درصدی نباید مقدار درصد بیشتر از 100 باشد"),
                 params={"value": value},
-
             )
-
+    expire = models.DateTimeField(default=timezone.now() + timedelta(days=1, minutes=5))
     type = models.CharField(max_length=10, choices=TYPE_SELECT, default=TYPE_PERCENT)
     max_dis = models.PositiveIntegerField(null=True, blank=True)
     discount_code = models.CharField(max_length=20, null=True, blank=True)
@@ -103,7 +111,10 @@ class Discount(models.Model):
             raise ValidationError({'amount': ('برای تخفیف درصدی نباید مقدار درصد بیشتر از 100 باشد')})
         elif self.type == "number" and self.max_dis:
             raise ValidationError({'max_dis': ('  برای مقادیر عددی این فیلد میبایست خالی باشد')})
+        elif self.expire < timezone.now() + timedelta(days=1):
+            raise ValidationError({'expire': (' تاریخ انقضا باید حداقل از  فردا شروع گردد')})
 
+        
 
 class Like(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="likes")
