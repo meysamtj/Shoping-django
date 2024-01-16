@@ -7,10 +7,9 @@ from django.dispatch import receiver
 def total(sender,**kwargs):
     if kwargs['created']:
         if kwargs['instance'].discount:
-           print('created order item ')
            if  kwargs['instance'].discount.type=='number' :
-               print('number order item 2')
-               kwargs['instance'].price_discount =kwargs['instance'].price- kwargs['instance'].discount.amount
+               if kwargs["instance"].price > kwargs["instance"].discount.amount:
+                    kwargs['instance'].price_discount =kwargs['instance'].price- kwargs['instance'].discount.amount
            elif  kwargs['instance'].discount.type=='percent' :
                 price=(kwargs['instance'].price* kwargs['instance'].discount.amount)/100
                 if kwargs['instance'].discount.max_dis and price > kwargs['instance'].discount.max_dis :

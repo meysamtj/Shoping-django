@@ -66,8 +66,6 @@ class Product(BaseModel, StatusMixin):
             self.slug = slugify(f'{self.item_name}')
         super().save(*args, **kwargs)
 
-    def get_absolute_url(self):
-        return reverse("home:detail", args=[self.slug])
 
 
 class Image(models.Model):
@@ -117,6 +115,8 @@ class Discount(Basemodeldiss):
             raise ValidationError({'max_dis': ('  برای مقادیر عددی این فیلد میبایست خالی باشد')})
         elif self.expire < timezone.now() + timedelta(days=1):
             raise ValidationError({'expire': (' تاریخ انقضا باید حداقل از  فردا شروع گردد')})
+        elif self.type == "percent" and self.discount_code:
+            raise ValidationError({'discount_code': ('  برای مقادیر درصدی این فیلد میبایست خالی باشد')})
 
 
 class Like(models.Model):
@@ -124,7 +124,7 @@ class Like(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="likes")
 
     def __str__(self):
-        return f'{self.user} liked {self.product}'
+        return f'{self.user} liked {self.product.item_name}'
 
     def clean(self):
         can = Like.objects.filter(user=self.user, product=self.product).exists()
@@ -143,4 +143,4 @@ class Comment(BaseModel):
         ordering = ("-id",)
 
     def __str__(self) -> str:
-        return f'{self.user.username} comment for {self.product.item_name}'
+        return f'{self.user} comment for {self.product.item_name}'
