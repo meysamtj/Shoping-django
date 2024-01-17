@@ -37,6 +37,21 @@ class OrderItem(models.Model):
     def clean(self):
         if self.quantity > self.product.inventory:
             raise ValidationError({'quantity': ('مقدار دریافت کالا بیشتر از موجودی می باشد')})
+        
+    @classmethod
+    def top_cell_product(cls):
+        orderitems=cls.objects.all()
+        list_counter=set([(order_items.counter_cell_product(order_items.product),order_items.product.item_name) for order_items in  orderitems])
+        sorted_by_second = sorted(list_counter, key=lambda tup: tup[0], reverse=True)
+        return sorted_by_second[:10]
+    
+    @staticmethod
+    def counter_cell_product(product):
+        orderitems=OrderItem.objects.filter(product=product)
+        sum_cell=sum([item.quantity for item in orderitems])
+        return sum_cell 
+
+    
 
     # def save(self, *args, **kwargs):
     #     self.product.inventory-=self.quantity

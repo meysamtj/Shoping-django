@@ -14,6 +14,12 @@ class LogicalManager(models.Manager):
     def get_queryset(self):
         return LogicalQuerySet(self.model).filter(is_deleted=False, is_active=True)
 
+    def is_discount(self):
+        return LogicalQuerySet(self.model).filter(is_deleted=False,is_active=True,discount__isnull=False).first(10)
+
+    def ten_product_new(self):
+        return LogicalQuerySet(self.model).first(10)
+
     def archive(self):
         return LogicalQuerySet(self.model)
 
@@ -28,6 +34,7 @@ class DateBase(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ("-created_at")
 class BaseModel(DateBase):
 
     is_active = models.BooleanField(default=True)

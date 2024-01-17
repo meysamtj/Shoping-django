@@ -6,6 +6,7 @@ from account.models import CustomUser
 from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
 from django.utils import timezone
+# from orders.models import OrderItem
 
 
 class Category(BaseModel, StatusMixin):
@@ -60,7 +61,19 @@ class Product(BaseModel, StatusMixin):
             return True
         else:
             return False
+    
+    # def counter_cell_product(self):
+    #     orderitems=OrderItem.objects.filter(product=self)
+    #     sum_cell=sum([item.quantity for item in orderitems])
+    #     return sum_cell 
 
+    # def top(self):
+    #     product = self.objects.all()
+    #     list=[(item.counter_cell_product,item.item_name) for item in product]
+    #     sort_list = sorted(list, key=lambda x : x[0], reverse=True)
+    #     return sort_list[:10]
+
+    
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(f'{self.item_name}')
