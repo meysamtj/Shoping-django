@@ -19,11 +19,12 @@ class Order(BaseModelOrder):
         ordering = ('is_paid', '-updated_at')
         verbose_name = _("Order")
         verbose_name_plural = _("Orders")
+
     def __str__(self):
         return f'user -->{self.user} total--> {self.total}'
 
-    # def total_price(self):
-    #     return sum(item.get_cost() for item in self.orderitems.all())
+    def total_price(self):
+        return sum(item.get_cost() for item in self.orderitems.all())
 
 
 class OrderItem(models.Model):
@@ -32,10 +33,11 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)], verbose_name=_("quantity"))
 
     def __str__(self):
-        return f'OrderItem: {self.id} : {self.product.item_name} X {self.quantity} price:{self.product.price_discount}'
+        return f'{self.product.item_name} X {self.quantity}'
 
     def get_cost(self):
         return self.product.price_discount * self.quantity
+
 
     def clean(self):
         if self.quantity > self.product.inventory:
