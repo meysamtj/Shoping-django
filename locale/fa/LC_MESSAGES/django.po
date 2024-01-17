@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-14 21:48+0330\n"
+"POT-Creation-Date: 2024-01-17 20:00+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,87 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+#: .\account\models.py:50
+msgid "email"
+msgstr "پست الکترونیک"
+
+#: .\account\models.py:51
+msgid "birth day"
+msgstr "روز تولد"
+
+#: .\account\models.py:54
+msgid "phone number"
+msgstr "شماره تلفن"
+
+#: .\account\models.py:55
+msgid "user type"
+msgstr "نوع کاربر"
+
+#: .\account\models.py:56 .\product\models.py:18 .\product\models.py:45
+#: .\product\models.py:91
+msgid "image"
+msgstr "عکس"
+
+#: .\account\models.py:57
+msgid "national code"
+msgstr "کد ملی"
+
+#: .\account\models.py:58
+msgid "gender"
+msgstr "جنسیت"
+
+#: .\account\models.py:68 .\orders\models.py:12 .\product\models.py:149
+#: .\product\models.py:166
+msgid "user"
+msgstr "کاربر"
+
+#: .\account\models.py:69
+msgid "city"
+msgstr "شهر"
+
+#: .\account\models.py:70
+msgid "country"
+msgstr "کشور"
+
+#: .\account\models.py:71
+msgid "street"
+msgstr "خیابان"
+
+#: .\account\models.py:72
+msgid "state"
+msgstr "منطقه"
+
+#: .\account\models.py:78 .\account\models.py:79
+msgid "Address"
+msgstr "آدرس"
+
+#: .\core\models.py:33
+msgid "created_at"
+msgstr "ساخته شده در تاریخ"
+
+#: .\core\models.py:34
+msgid "updated_at"
+msgstr "به روز شده در تاریخ"
+
+#: .\core\models.py:35
+#, fuzzy
+#| msgid "Delete"
+msgid "is_deleted"
+msgstr "حذف شده ؟"
+
+#: .\core\models.py:36
+#, fuzzy
+#| msgid "Delete"
+msgid "delete_at"
+msgstr "حذف شده در تاریخ"
+
+#: .\core\models.py:44
+msgid "is_active"
+msgstr "فعال هست ؟"
+
 #: .\env\Lib\site-packages\django\contrib\messages\apps.py:16
 msgid "Messages"
-msgstr ""
+msgstr "پیام ها"
 
 #: .\env\Lib\site-packages\django\contrib\sitemaps\apps.py:8
 msgid "Site Maps"
@@ -343,7 +421,7 @@ msgstr ""
 
 #: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2051
 msgid "Integer"
-msgstr ""
+msgstr "عدد"
 
 #: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2147
 msgid "Big (8 byte) integer"
@@ -390,7 +468,7 @@ msgstr ""
 
 #: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2432
 msgid "Text"
-msgstr ""
+msgstr "متن"
 
 #: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2507
 #, python-format
@@ -408,7 +486,7 @@ msgstr ""
 
 #: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2515
 msgid "Time"
-msgstr ""
+msgstr "زمان"
 
 #: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2623
 msgid "URL"
@@ -429,11 +507,12 @@ msgstr ""
 
 #: .\env\Lib\site-packages\django\db\models\fields\files.py:232
 msgid "File"
-msgstr ""
+msgstr "فایل"
 
 #: .\env\Lib\site-packages\django\db\models\fields\files.py:393
+#: .\product\models.py:97
 msgid "Image"
-msgstr ""
+msgstr "عکس"
 
 #: .\env\Lib\site-packages\django\db\models\fields\json.py:26
 msgid "A JSON object"
@@ -594,13 +673,13 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: .\env\Lib\site-packages\django\forms\formsets.py:484
-#: .\env\Lib\site-packages\django\forms\formsets.py:491
+#: .\env\Lib\site-packages\django\forms\formsets.py:491 .\orders\models.py:20
 msgid "Order"
-msgstr ""
+msgstr "سفارش"
 
 #: .\env\Lib\site-packages\django\forms\formsets.py:499
 msgid "Delete"
-msgstr ""
+msgstr "حذف"
 
 #: .\env\Lib\site-packages\django\forms\models.py:895
 #, python-format
@@ -1232,6 +1311,186 @@ msgstr ""
 msgid "Connect, get help, or contribute"
 msgstr ""
 
-#: .\product\models.py:11
+#: .\orders\models.py:14 .\product\models.py:38
+#, fuzzy
+#| msgid "country"
+msgid "discountdiscount"
+msgstr "تخفیف"
+
+#: .\orders\models.py:15
+msgid "total"
+msgstr "جمع مبالغ"
+
+#: .\orders\models.py:16
+msgid "is paid"
+msgstr "وضعیت پرداخت کردن"
+
+#: .\orders\models.py:21
+#, fuzzy
+#| msgid "Order"
+msgid "Orders"
+msgstr "سفارشات"
+
+#: .\orders\models.py:30
+msgid "order"
+msgstr "سفارش"
+
+#: .\orders\models.py:31 .\product\models.py:90 .\product\models.py:150
+#: .\product\models.py:167
+msgid "product"
+msgstr "محصول"
+
+#: .\orders\models.py:32
+msgid "quantity"
+msgstr "تعداد"
+
+#: .\orders\models.py:60
+#, fuzzy
+#| msgid "Order"
+msgid "OrderItem"
+msgstr "سفارش"
+
+#: .\orders\models.py:61
+#, fuzzy
+#| msgid "Order"
+msgid "OrderItems"
+msgstr "سفارش"
+
+#: .\product\models.py:14 .\product\models.py:22
 msgid "category_name"
 msgstr "نام دسته بندی"
+
+#: .\product\models.py:16 .\product\models.py:36
+#, fuzzy
+#| msgid "category_name"
+msgid "category"
+msgstr "نام دسته بندی"
+
+#: .\product\models.py:17 .\product\models.py:44
+msgid "slug"
+msgstr "اسلاگ"
+
+#: .\product\models.py:23
+#, fuzzy
+#| msgid "category_name"
+msgid "categories"
+msgstr "دسته بندی ها"
+
+#: .\product\models.py:39
+msgid "price"
+msgstr "قیمت"
+
+#: .\product\models.py:40
+msgid "inventory"
+msgstr "تعداد"
+
+#: .\product\models.py:41
+msgid "item name"
+msgstr "اسم محصول"
+
+#: .\product\models.py:42
+msgid "brand"
+msgstr "برند"
+
+#: .\product\models.py:43
+msgid "description"
+msgstr "توصیف"
+
+#: .\product\models.py:46
+msgid "color"
+msgstr "رنگ"
+
+#: .\product\models.py:47
+#, fuzzy
+#| msgid "country"
+msgid "price discount"
+msgstr "قیمت تخقیق"
+
+#: .\product\models.py:51
+#, fuzzy
+#| msgid "product"
+msgid "Product"
+msgstr "محصول"
+
+#: .\product\models.py:52
+#, fuzzy
+#| msgid "product"
+msgid "Products"
+msgstr "محصولات"
+
+#: .\product\models.py:98
+#, fuzzy
+#| msgid "Image"
+msgid "Images"
+msgstr "عکس"
+
+#: .\product\models.py:124
+msgid "expire"
+msgstr "تاریخ انقضا"
+
+#: .\product\models.py:125
+#, fuzzy
+#| msgid "user type"
+msgid "type"
+msgstr "نوع"
+
+#: .\product\models.py:126
+msgid "max_dis"
+msgstr "بیشترین مبلغ تخفیف"
+
+#: .\product\models.py:127
+#, fuzzy
+#| msgid "country"
+msgid "discount_code"
+msgstr "کد تخفیف"
+
+#: .\product\models.py:128
+#, fuzzy
+#| msgid "country"
+msgid "amount"
+msgstr "میزان مبلغ"
+
+#: .\product\models.py:131
+#, fuzzy
+#| msgid "country"
+msgid "Discount"
+msgstr "تخفیف"
+
+#: .\product\models.py:132
+#, fuzzy
+#| msgid "country"
+msgid "Discounts"
+msgstr "تخفیف ها"
+
+#: .\product\models.py:161
+msgid "Like"
+msgstr "لایک"
+
+#: .\product\models.py:162
+msgid "Likes"
+msgstr "لایک ها"
+
+#: .\product\models.py:169
+msgid "reply"
+msgstr "پاسخ"
+
+#: .\product\models.py:170
+msgid "is reply"
+msgstr "آیا پاسخ میباشد"
+
+#: .\product\models.py:171
+msgid "body"
+msgstr "بدنه"
+
+#: .\product\models.py:175
+msgid "Comment"
+msgstr "نظر"
+
+#: .\product\models.py:176
+msgid "Comments"
+msgstr "نظرات"
+
+#, fuzzy
+#~| msgid "birth day"
+#~ msgid "birth"
+#~ msgstr "روز تولد"

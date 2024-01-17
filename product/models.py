@@ -7,17 +7,20 @@ from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
 from django.utils import timezone
 # from orders.models import OrderItem
+from django.utils.text import gettext_lazy as _
 
 
 class Category(BaseModel, StatusMixin):
-    category_name = models.CharField(max_length=255)
-    category = models.ForeignKey('self', on_delete=models.CASCADE, related_name="categories", blank=True, null=True)
-    slug = models.SlugField(unique=True, blank=True, max_length=255)
-    image = models.ImageField(upload_to="categories", null=True, blank=True)
+    category_name = models.CharField(max_length=255, verbose_name=_("category_name"))
+    category = models.ForeignKey('self', on_delete=models.CASCADE, related_name="categories",
+                                 verbose_name=_("category"), blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True, max_length=255, verbose_name=_("slug"))
+    image = models.ImageField(upload_to="categories", null=True, blank=True, verbose_name=_("image"))
 
     class Meta:
         ordering = ("category_name",)
-        verbose_name_plural = "categories"
+        verbose_name = _("category_name")
+        verbose_name_plural = _("categories")
 
     def __str__(self):
         return self.category_name
@@ -29,20 +32,24 @@ class Category(BaseModel, StatusMixin):
 
 
 class Product(BaseModel, StatusMixin):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products")
-    discount = models.ForeignKey('Discount', on_delete=models.CASCADE, related_name="products", blank=True, null=True)
-    price = models.PositiveIntegerField()
-    inventory = models.PositiveIntegerField()
-    item_name = models.CharField(max_length=255)
-    brand = models.CharField(max_length=255)
-    description = models.TextField()
-    slug = models.SlugField(unique=True, blank=True, max_length=255)
-    image = models.ImageField(upload_to="products")
-    color = models.CharField(max_length=255, default="black")
-    price_discount = models.PositiveIntegerField(default=0)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products",
+                                 verbose_name=_("category"))
+    discount = models.ForeignKey('Discount', on_delete=models.CASCADE, related_name="products", blank=True, null=True,
+                                 verbose_name=_("discount"))
+    price = models.PositiveIntegerField(verbose_name=_("price"))
+    inventory = models.PositiveIntegerField(verbose_name=_("inventory"))
+    item_name = models.CharField(max_length=255, verbose_name=_("item name"))
+    brand = models.CharField(max_length=255, verbose_name=_("brand"))
+    description = models.TextField(verbose_name=_("description"))
+    slug = models.SlugField(unique=True, blank=True, max_length=255, verbose_name=_("slug"))
+    image = models.ImageField(upload_to="products", verbose_name=_("image"))
+    color = models.CharField(max_length=255, default="black", verbose_name=_("color"))
+    price_discount = models.PositiveIntegerField(default=0, verbose_name=_("price discount"))
 
     class Meta:
         ordering = ("-id",)
+        verbose_name = _("Product")
+        verbose_name_plural = _("Products")
 
     def clean(self):
         if self.discount:
@@ -61,7 +68,7 @@ class Product(BaseModel, StatusMixin):
             return True
         else:
             return False
-    
+
     # def counter_cell_product(self):
     #     orderitems=OrderItem.objects.filter(product=self)
     #     sum_cell=sum([item.quantity for item in orderitems])
@@ -73,20 +80,22 @@ class Product(BaseModel, StatusMixin):
     #     sort_list = sorted(list, key=lambda x : x[0], reverse=True)
     #     return sort_list[:10]
 
-    
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(f'{self.item_name}')
         super().save(*args, **kwargs)
 
 
-
 class Image(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
-    image = image = models.ImageField(upload_to="imgproducts")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images", verbose_name=_("product"))
+    image = image = models.ImageField(upload_to="imgproducts", verbose_name=_("image"))
 
     def __str__(self):
         return self.product.item_name
+
+    class Meta:
+        verbose_name = _("Image")
+        verbose_name_plural = _("Images")
 
 
 class Discount(Basemodeldiss):
@@ -112,11 +121,15 @@ class Discount(Basemodeldiss):
                 params={"value": value},
             )
 
-    expire = models.DateTimeField(default=timezone.now() + timedelta(days=1, minutes=5))
-    type = models.CharField(max_length=10, choices=TYPE_SELECT, default=TYPE_PERCENT)
-    max_dis = models.PositiveIntegerField(null=True, blank=True)
-    discount_code = models.CharField(max_length=20, null=True, blank=True)
-    amount = models.PositiveIntegerField()
+    expire = models.DateTimeField(default=timezone.now() + timedelta(days=1, minutes=5), verbose_name=_("expire"))
+    type = models.CharField(max_length=10, choices=TYPE_SELECT, default=TYPE_PERCENT, verbose_name=_("type"))
+    max_dis = models.PositiveIntegerField(null=True, blank=True, verbose_name=_("max_dis"))
+    discount_code = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("discount_code"))
+    amount = models.PositiveIntegerField(verbose_name=_("amount"))
+
+    class Meta:
+        verbose_name = _("Discount")
+        verbose_name_plural = _("Discounts")
 
     def __str__(self):
         return f'type --> {self.type} amount --> {self.amount}'
@@ -133,8 +146,8 @@ class Discount(Basemodeldiss):
 
 
 class Like(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="likes")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="likes")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="likes", verbose_name=_("user"))
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="likes", verbose_name=_("product"))
 
     def __str__(self):
         return f'{self.user} liked {self.product.item_name}'
@@ -144,16 +157,23 @@ class Like(models.Model):
         if can:
             raise ValidationError({'user': (' یک بار با این کاربری لایک انجام شده است')})
 
+    class Meta:
+        verbose_name = _("Like")
+        verbose_name_plural = _("Likes")
+
 
 class Comment(BaseModel):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
-    reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='comments', blank=True, null=True)
-    is_reply = models.BooleanField(default=False)
-    body = models.TextField()
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments', verbose_name=_("user"))
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments', verbose_name=_("product"))
+    reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='comments', blank=True, null=True,
+                              verbose_name=_("reply"))
+    is_reply = models.BooleanField(default=False, verbose_name=_("is reply"))
+    body = models.TextField(verbose_name=_("body"))
 
     class Meta:
         ordering = ("-id",)
+        verbose_name = _("Comment")
+        verbose_name_plural = _("Comments")
 
     def __str__(self) -> str:
         return f'{self.user} comment for {self.product.item_name}'

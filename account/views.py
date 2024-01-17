@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+"""
+, celery ,signup , log in , send email with redis,otp code,
+"""

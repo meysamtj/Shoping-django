@@ -1,6 +1,6 @@
-# The Project : Electronics store
-description:Electronics store
-
+Hello
+  Electronics stores such as phones and...
+Includes customer panel and admin panel:
 
 An online store is a website that sells various products. This site includes home page, product page, shopping cart page and payment page. On the home page, customers can easily access product categories and navigate to the product page. On the products page, images and information about the products are displayed and users can add the desired product to the shopping cart. On the shopping cart page, customers can view their products and check the quantity and price of each one, and use the discount code if needed, and finally by selecting the payment option, they will be transferred to the payment page. After the payment is completed, the order will be sent to the customer's address. The store site also has features such as searching for products, communicating with customers through the contact form, receiving customer comments and feedback, and offering discounts. The store admin and users can also add, delete, and edit products to the site and provide discounts for the desired product.
 Admin panel:

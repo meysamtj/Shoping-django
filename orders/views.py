@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+"""
+show cart, list orders, list pay oprders, list not pay orders, list orderitem ,date shop , addres,status order 
+"""

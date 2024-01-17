@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.views import View
 
+"""
+add to cart, page detail product, like , comment , reply , images product
+"""
 
-class Home(View):
-    template_name = ""
 
-    def get(self, request):
-        return render(request, self.template_name)
+
