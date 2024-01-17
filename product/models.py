@@ -27,7 +27,7 @@ class Category(BaseModel, StatusMixin):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.category_name)
+            self.slug = slugify(f'{self.category_name}-{self.id}')
         super().save(*args, **kwargs)
 
 
@@ -44,7 +44,7 @@ class Product(BaseModel, StatusMixin):
     slug = models.SlugField(unique=True, blank=True, max_length=255, verbose_name=_("slug"))
     image = models.ImageField(upload_to="products", verbose_name=_("image"))
     color = models.CharField(max_length=255, default="black", verbose_name=_("color"))
-    price_discount = models.PositiveIntegerField(default=0, verbose_name=_("price discount"))
+    price_discount = models.PositiveIntegerField(default=0, verbose_name=_("price_discount"))
 
     class Meta:
         ordering = ("-id",)
@@ -82,13 +82,13 @@ class Product(BaseModel, StatusMixin):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f'{self.item_name}')
+            self.slug = slugify(f'{self.item_name}-{self.id}')
         super().save(*args, **kwargs)
 
 
 class Image(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images", verbose_name=_("product"))
-    image = image = models.ImageField(upload_to="imgproducts", verbose_name=_("image"))
+    image  = models.ImageField(upload_to="imgproducts", verbose_name=_("image"))
 
     def __str__(self):
         return self.product.item_name

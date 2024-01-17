@@ -64,19 +64,19 @@ class TestLike(TestCase):
 
 class TestCategory(TestCase):
     def setUp(self):
-        self.category = baker.make(Category, category_name = "laptop")
+        self.category = baker.make(Category, category_name = "laptop", id=1)
 
     def test_model_str(self):
         self.assertEqual(str(self.category),'laptop')
     
     def test_save(self):
-        self.assertEqual(self.category.slug,'laptop')
+        self.assertEqual(self.category.slug,'laptop-1')
     
 class Testproduct(TestCase):
     def setUp(self):
         self.user_mamad = baker.make(CustomUser, username="mamad", email="mamad@gmail.com")
         self.user_meysam = baker.make(CustomUser, username="meysam", email="meysam@gmail.com")
-        self.product = baker.make(Product, item_name="iphone", inventory=30)
+        self.product = baker.make(Product,id=5, item_name="iphone", inventory=30)
         self.like = baker.make(Like, product=self.product, user = self.user_mamad)
         self.like2 = baker.make(Like, product=self.product, user = self.user_meysam)
         self.discount = baker.make(Discount, type="number", amount = 30000)
@@ -93,7 +93,7 @@ class Testproduct(TestCase):
         self.assertTrue(self.product.is_like(self.user_meysam))
     
     def test_save(self):
-        self.assertEqual(self.product.slug,'iphone')
+        self.assertEqual(self.product.slug,'iphone-5')
     
     def test_clean(self):
         with self.assertRaises(ValidationError):
