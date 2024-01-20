@@ -98,7 +98,7 @@
                                                 <img src="{{ product.image.url }}" alt="shop">
 												<div class="product-label">
 													{% if product.discount %}
-														{% if product.discount.type == 'perecent' %}
+														{% if product.discount.type == 'percent' %}
 														<span class="sale">{{product.discount.amount}}%</span>
 														{% else %}
 														<span class="sale">{{product.discount.amount}} toman</span>
@@ -234,7 +234,7 @@
                                                 <img src="{{ product.image.url }}" alt="shop">
 												<div class="product-label">
 													{% if product.discount %}
-														{% if product.discount.type == 'perecent' %}
+														{% if product.discount.type == 'percent' %}
 														<span class="sale">{{product.discount.amount}}%</span>
 														{% else %}
 														<span class="sale">{{product.discount.amount}} toman</span>

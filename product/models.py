@@ -42,7 +42,7 @@ class Product(BaseModel, StatusMixin):
     brand = models.CharField(max_length=255, verbose_name=_("brand"))
     description = models.TextField(verbose_name=_("description"))
     slug = models.SlugField(unique=True, blank=True, max_length=255, verbose_name=_("slug"))
-    image = models.ImageField(upload_to="products", verbose_name=_("image"),null=True, blank=True)
+    image = models.ImageField(upload_to="products", verbose_name=_("image"))
     color = models.CharField(max_length=255, default="black", verbose_name=_("color"))
     price_discount = models.PositiveIntegerField(default=0, verbose_name=_("price_discount"))
 
