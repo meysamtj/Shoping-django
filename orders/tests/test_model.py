@@ -17,11 +17,11 @@ class TestOrder(TestCase):
 
 class TestOrderItem(TestCase):
     def setUp(self):
-        self.product = baker.make(Product, item_name="iphone", price_discount=10, inventory=30)
+        self.product = baker.make(Product, name="iphone", price_discount=10, inventory=30)
         self.order_item = baker.make(OrderItem, product=self.product, quantity=2)
         # self.order_item_clean = baker.make(OrderItem,  product=self.product, quantity=50)
 
-        self.product2 = baker.make(Product, item_name='product',price=500,inventory=10)
+        self.product2 = baker.make(Product, name='product',price=500,inventory=10)
         self.orderitem=baker.make(OrderItem,product=self.product2,quantity=2)
         self.orderitem2=baker.make(OrderItem,product=self.product,quantity=3)
 
@@ -34,7 +34,6 @@ class TestOrderItem(TestCase):
 
     def test_clean(self):
         with self.assertRaises(ValidationError):
-            # This should raise a validation error because the quantity is greater than the inventory
             order_item = baker.prepare(OrderItem, product=self.product, quantity=31)
             order_item.full_clean()
         # with self.assertRaises(ValidationError):

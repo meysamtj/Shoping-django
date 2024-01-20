@@ -17,10 +17,10 @@ class LogicalManager(models.Manager):
         return LogicalQuerySet(self.model).filter(is_deleted=False, is_active=True)
 
     def is_discount(self):
-        return LogicalQuerySet(self.model).filter(is_deleted=False, is_active=True, discount__isnull=False).first(10)
+        return LogicalQuerySet(self.model).filter(is_deleted=False, is_active=True, discount__isnull=False)[:10]
 
     def ten_product_new(self):
-        return LogicalQuerySet(self.model).first(10)
+        return LogicalQuerySet(self.model)[:10]
 
     def archive(self):
         return LogicalQuerySet(self.model)

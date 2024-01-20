@@ -33,7 +33,7 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)], verbose_name=_("quantity"))
 
     def __str__(self):
-        return f'{self.product.item_name} X {self.quantity}'
+        return f'{self.product.name} X {self.quantity}'
 
     def get_cost(self):
         return self.product.price_discount * self.quantity
@@ -47,7 +47,7 @@ class OrderItem(models.Model):
     def top_cell_product(cls):
         orderitems = cls.objects.all()
         list_counter = set(
-            [(order_items.counter_cell_product(order_items.product), order_items.product.item_name) for order_items in
+            [(order_items.counter_cell_product(order_items.product), order_items.product.name) for order_items in
              orderitems])
         sorted_by_second = sorted(list_counter, key=lambda tup: tup[0], reverse=True)
         return sorted_by_second[:10]
