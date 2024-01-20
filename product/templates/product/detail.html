@@ -1,17 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block navbar %}
-<ul class="main-nav nav navbar-nav">
-	<li ><a href="{% url 'core:home' %}">Home</a></li>
-	<li><a href="#">Hot Deals</a></li>
-	<li class="active"><a href="{% url 'core:categories' %}">Categories</a></li>
-	<li><a href="#">Laptops</a></li>
-	<li><a href="#">Smartphones</a></li>
-	<li><a href="#">Cameras</a></li>
-	<li><a href="#">Accessories</a></li>
-</ul>
-{% endblock%}
-
+{% include 'navbar.html' %}
 {% block content %}
 
 		<!-- SECTION -->
@@ -334,7 +323,7 @@
 								<img src="{{ related.image.url }}"  alt="">
 								<div class="product-label">
                                     {% if related.discount %}
-														{% if related.discount.type == 'perecent' %}
+														{% if related.discount.type == 'percent' %}
                                                             <span class="sale">{{related.discount.amount}}%</span>
 														{% else %}
                                                             <span class="sale">{{related.discount.amount}} toman</span>
