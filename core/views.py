@@ -8,7 +8,6 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin
 from orders.models import OrderItem
 
-
 # Create your views here.
 
 
@@ -20,14 +19,15 @@ from orders.models import OrderItem
 
 
 class Home(ListView):
-    template_name = 'core/home.html'
+    template_name = 'core/home(1).html'
     model = Category
     queryset = Category.objects.all()[:3]
     context_object_name = 'items'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["products"] = Product.objects.ten_product_new()
+        context["products"] = [(product.is_like(self.request.user),product) for product in Product.objects.ten_product_new()] 
+        # context["products"] = Product.objects.ten_product_new()
         context["top_cells"] = OrderItem.top_cell_product()
         context["ten_discounts"] = Product.objects.is_discount()
         return context
@@ -61,3 +61,4 @@ class ShowCategorys(ListView):
 #     model=Product
 #     queryset=Category.objects.all()[:3]
 #     context_object_name='products'
+

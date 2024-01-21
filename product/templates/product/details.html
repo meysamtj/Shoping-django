@@ -1,0 +1,390 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}
+<ul class="main-nav nav navbar-nav">
+	<li ><a href="{% url 'core:home' %}">Home</a></li>
+	<li><a href="#">Hot Deals</a></li>
+	<li class="active"><a href="{% url 'core:categories' %}">Categories</a></li>
+	<li><a href="#">Laptops</a></li>
+	<li><a href="#">Smartphones</a></li>
+	<li><a href="#">Cameras</a></li>
+	<li><a href="#">Accessories</a></li>
+</ul>
+{% endblock%}
+{%  block content %}
+		<!-- SECTION -->
+		{% include 'messages.html' %}
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<!-- Product main img -->
+					<div class="col-md-5 col-md-push-2">
+						<div id="product-main-img">
+							<div class="product-preview">
+								<img src="{{ product.image.url }}" alt="product">
+							</div>
+                            {% for image in images %}
+                                <div class="product-preview">
+								<img src="{{ image.image.url }}" alt="">
+							</div>
+                            {% endfor %}
+
+						</div>
+					</div>
+					<!-- /Product main img -->
+
+					<!-- Product thumb imgs -->
+					<div class="col-md-2  col-md-pull-5">
+						<div id="product-imgs">
+                        <div class="product-preview">
+								<img src="{{ product.image.url }}" alt="">
+							</div>
+                            {% for image in images %}
+                                <div class="product-preview">
+								<img src="{{ image.image.url }}" alt="">
+							</div>
+                            {% endfor %}
+
+						</div>
+					</div>
+					<!-- /Product thumb imgs -->
+
+					<!-- Product details -->
+					<div class="col-md-5">
+						<div class="product-details">
+							<h2 class="product-name">{{ product.name }}</h2>
+							<div>
+								<div class="product-rating">
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star-o"></i>
+								</div>
+
+							</div>
+							<div>
+                                {% if product.discount %}
+                                        <h3 class="product-price">{{ product.price_discount }} <del class="product-old-price">{{ product.price }}</del></h3>
+                                    {% else %}
+                                    <h3 class="product-price">{{ product.price_discount }} </h3>
+					            {% endif %}
+
+								<span class="product-available">In Stock</span>
+							</div>
+							<p>{{ product.Specifications }}</p>
+
+
+
+							<div class="add-to-cart">
+								<div class="qty-label">
+									Qty
+									<div class="input-number">
+										<input type="number">
+										<span class="qty-up">+</span>
+										<span class="qty-down">-</span>
+									</div>
+								</div>
+								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+							</div>
+
+							<ul class="product-btns">
+								{% if liked %}
+								<li><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart-o "></i> like</a></li>
+								{% else %}
+								<li><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart text-danger"></i> like</a></li>
+								
+								{% endif %}
+								<p>likes : {{product.likes.count}}</p>
+
+							</ul>
+
+
+
+							<ul class="product-links">
+								<li>Share:</li>
+								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+								<li><a href="#"><i class="fa fa-envelope"></i></a></li>
+							</ul>
+
+						</div>
+					</div>
+					<!-- /Product details -->
+
+					<!-- Product tab -->
+					
+					<div class="col-md-12">
+						
+						<div id="product-tab">
+							<!-- product tab nav -->
+							<ul class="tab-nav">
+								<li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
+								<li ><a data-toggle="tab" href="#tab2">Details</a></li>
+								<li><a data-toggle="tab" href="#tab3">comments ({{product.comments.count}})</a></li>
+							</ul>
+							<!-- /product tab nav -->
+
+							<!-- product tab content -->
+							<div class="tab-content">
+								<div id="tab1" class="tab-pane fade in active">
+									<div class="row">
+										<div class="col-md-12">
+											<p>{{ product.description }}</p>
+										</div>
+									</div>
+								</div>
+								<!-- tab1  -->
+								<!-- /tab1  -->
+
+								<!-- tab2  -->
+								<div id="tab2" class="tab-pane fade in">
+									<div class="row">
+										<div class="col-md-12">
+                                            <h4><b class="text-info">Brand</b> : {{ product.brand }}</h4>
+					                        <h4><b class="text-info">Inventory</b> : {{ product.inventory }}</h4>
+					                        <h4><b class="text-info">Color</b> : {{ product.color }}</h4>
+                                        </div>
+									</div>
+								</div>
+								<!-- /tab2  -->
+
+								<!-- tab3  -->
+								<div id="tab3" class="tab-pane fade in">
+									<div class="row">
+										<!-- Rating -->
+										<div class="col-md-3">
+											<div id="rating">
+												<div class="rating-avg">
+													<span>4.5</span>
+													<div class="rating-stars">
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star-o"></i>
+													</div>
+												</div>
+												<ul class="rating">
+													<li>
+														<div class="rating-stars">
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star"></i>
+														</div>
+														<div class="rating-progress">
+															<div style="width: 80%;"></div>
+														</div>
+														<span class="sum">3</span>
+													</li>
+													<li>
+														<div class="rating-stars">
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star-o"></i>
+														</div>
+														<div class="rating-progress">
+															<div style="width: 60%;"></div>
+														</div>
+														<span class="sum">2</span>
+													</li>
+													<li>
+														<div class="rating-stars">
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star-o"></i>
+															<i class="fa fa-star-o"></i>
+														</div>
+														<div class="rating-progress">
+															<div></div>
+														</div>
+														<span class="sum">0</span>
+													</li>
+													<li>
+														<div class="rating-stars">
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star-o"></i>
+															<i class="fa fa-star-o"></i>
+															<i class="fa fa-star-o"></i>
+														</div>
+														<div class="rating-progress">
+															<div></div>
+														</div>
+														<span class="sum">0</span>
+													</li>
+													<li>
+														<div class="rating-stars">
+															<i class="fa fa-star"></i>
+															<i class="fa fa-star-o"></i>
+															<i class="fa fa-star-o"></i>
+															<i class="fa fa-star-o"></i>
+															<i class="fa fa-star-o"></i>
+														</div>
+														<div class="rating-progress">
+															<div></div>
+														</div>
+														<span class="sum">0</span>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<!-- /Rating -->
+
+										<!-- Reviews -->
+										<div class="col-md-6">
+											<div id="reviews">
+												<ul class="reviews">
+													{% for comment in page_obj  %}
+													<li>
+														<div class="review-heading">
+															<h5 class="name">{{comment.user.username}}</h5>
+															<p class="date">{{comment.created_at}}</p>
+															<div class="review-rating">
+																<i class="fa fa-star"></i>
+																<i class="fa fa-star"></i>
+																<i class="fa fa-star"></i>
+																<i class="fa fa-star"></i>
+																<i class="fa fa-star-o empty"></i>
+															</div>
+														</div>
+														<div class="review-body">
+															<p>{{comment.body}}</p>
+														</div>
+													</li>
+													{% endfor %}
+													
+												</ul>
+												<div class="pagination">
+													<span class="step-links">
+														{% if page_obj.has_previous %}
+															<li><a href="?page=1">&laquo; first</a></li>
+												{#            <a href="?page=1">&laquo; first</a>#}
+															<li><a href="?page={{ page_obj.previous_page_number }}">pre</a></li>
+												{#            <a href="?page={{ page_obj.previous_page_number }}">previous</a>#}
+														{% endif %}
+												
+														<span class="current">
+															Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+														</span>
+												
+														{% if page_obj.has_next %}
+															<li><a href="?page={{ page_obj.next_page_number }}">next</a></li>
+												{#            <a href="?page={{ page_obj.next_page_number }}">next</a>#}
+															<li><a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></li>
+												{#            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>#}
+														{% endif %}
+													</span>
+												</div>
+											</div>
+										</div>
+										<!-- /Reviews -->
+
+										<!-- Review Form -->
+										<div class="col-md-3">
+											<div id="review-form" >
+												<form class="review-form" action='{% url 'products:comment' product.id %}' method='POST'>
+													{% csrf_token %}
+													
+													<textarea class="input" placeholder="Your Comment" name='body'></textarea>
+													
+													<button class="primary-btn">Submit</button>
+												</form>
+											</div>
+										</div>
+										<!-- /Review Form -->
+									</div>
+								</div>
+								<!-- /tab3  -->
+							</div>
+							<!-- /product tab content  -->
+						</div>
+					</div>
+					<!-- /product tab -->
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /SECTION -->
+
+		<!-- Section -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+
+					<div class="col-md-12">
+						<div class="section-title text-center">
+							<h3 class="title">Related Products</h3>
+						</div>
+					</div>
+
+					<!-- product -->
+                    {% for related in relateds %}
+                        <div class="col-md-3 col-xs-6">
+						<div class="product">
+							<div class="product-img">
+								<img src="{{ related.image.url }}"  alt="">
+								<div class="product-label">
+                                    {% if related.discount %}
+														{% if related.discount.type == 'perecent' %}
+                                                            <span class="sale">{{related.discount.amount}}%</span>
+														{% else %}
+                                                            <span class="sale">{{related.discount.amount}} toman</span>
+														{% endif %}
+
+                                         {% endif %}
+
+								</div>
+							</div>
+							<div class="product-body">
+								<p class="product-category">{{ related.category.name }}</p>
+								<h3 class="product-name"><a href="{% url 'products:detail' related.slug  %}">{{ related.name }}</a></h3>
+                                         {% if related.discount %}
+
+                                                         <h4 class="product-price">{{ related.price_discount }}<del class="product-old-price">{{ related.price }}</del></h4>
+										{% else %}
+                                             <h4 class="product-price">{{ related.price_discount }}</h4>
+                                         {% endif %}
+								<div class="product-rating">
+								</div>
+								<div class="product-btns">
+									<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+									<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+									<button class="quick-view"><a class="quick-view" href="{% url 'products:detail' related.slug  %}"><i class="fa fa-eye"></i></a><span class="tooltipp">quick view</span></button>
+								</div>
+							</div>
+							<div class="add-to-cart">
+								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+							</div>
+						</div>
+					</div>
+                    {% endfor %}
+
+					<!-- /product -->
+
+					<!-- product -->
+
+
+					<!-- /product -->
+
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /Section -->
+
+
+        </div>
+{% endblock %}

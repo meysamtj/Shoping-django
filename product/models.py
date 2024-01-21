@@ -65,9 +65,9 @@ class Product(BaseModel, StatusMixin):
     def is_like(self, user):
         like = user.likes.filter(product=self).exists()
         if like:
-            return True
+            return  False
         else:
-            return False
+            return True
 
     # def counter_cell_product(self):
     #     orderitems=OrderItem.objects.filter(product=self)
