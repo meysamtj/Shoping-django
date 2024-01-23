@@ -33,8 +33,8 @@ class CustomUser(AbstractUser, BaseModel):
     national_code = models.CharField(max_length=10, verbose_name=_("national code"))
     gender = models.CharField(max_length=5, choices=GENDER_SELECT, default=GENDER_MEN, verbose_name=_("gender"))
     objects = CustomUserManager()
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "phone_number"]
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email", "phone_number"]
 
     def __str__(self):
         return self.email

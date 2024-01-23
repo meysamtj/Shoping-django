@@ -8,6 +8,7 @@ from django.views import View
 from django.core.paginator import Paginator
 from django.contrib import messages
 
+
 # Create your views here.
 
 
@@ -19,14 +20,15 @@ class Products(ListView):
     def get_queryset(self):
         self.category_id = self.kwargs['pk']
         self.categories = Category.objects.all()[:3]
-        return [ (product.is_like(self.request.user),product) for product in Product.objects.filter(category__id=self.kwargs['pk']) ] 
+        return [(product.is_like(self.request.user), product) for product in
+                Product.objects.filter(category__id=self.kwargs['pk'])]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["products"] = Product.objects.ten_product_new()
         context["top_cells"] = OrderItem.top_cell_product()
         context["ten_discounts"] = Product.objects.is_discount()
-        context["len"]= len(self.get_queryset())
+        context["len"] = len(self.get_queryset())
         context["category_id"] = self.category_id
         context["items"] = self.categories
         return context
@@ -49,15 +51,16 @@ class DetailProduct(ListView):
         context["images"] = Image.objects.filter(product=self.get_queryset())
         context["relateds"] = Product.objects.filter(category=self.get_queryset().category).exclude(
             id=self.get_queryset().id)
-        comments=Comment.objects.select_related('product').filter(product=self.get_queryset(),is_reply=False)
-        paginator=Paginator(comments,3)
-        page_number=self.request.GET.get("page",1)
-        page_objj=paginator.get_page(page_number)
-        context["page_obj"]=page_objj
-        context['liked']=True if self.get_queryset().is_like(self.request.user) else False 
+        comments = Comment.objects.select_related('product').filter(product=self.get_queryset(), is_reply=False)
+        paginator = Paginator(comments, 3)
+        page_number = self.request.GET.get("page", 1)
+        page_objj = paginator.get_page(page_number)
+        context["page_obj"] = page_objj
+        context['liked'] = True if self.get_queryset().is_like(self.request.user) else False
         context["category_id"] = self.category_id
         context["items"] = self.categories
         return context
+
 
 class Search(ListView):
     template_name = 'product/product.html'
@@ -65,48 +68,51 @@ class Search(ListView):
     paginate_by = 6
 
     def get_queryset(self):
+        self.categories = Category.objects.all()[:3]
         if self.request.GET.get("search"):
-            search = self.request.GET.get("search")
             search_query = self.request.GET.get('search')
-            search = [ (product.is_like(self.request.user),product) for product in Product.objects.filter(Q(name__icontains=search_query) | Q(category__name__icontains=search_query))]
+            search = [(product.is_like(self.request.user), product) for product in Product.objects.filter(
+                Q(name__icontains=search_query) | Q(category__name__icontains=search_query))]
             return search
         else:
-            return [ (product.is_like(self.request.user),product) for product in Product.objects.all() ] 
+            return [(product.is_like(self.request.user), product) for product in Product.objects.all()]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["products"] = Product.objects.ten_product_new()
         context["top_cells"] = OrderItem.top_cell_product()
         context["ten_discounts"] = Product.objects.is_discount()
-        context["len"]= len(self.get_queryset())
+        context["len"] = len(self.get_queryset())
+        context["items"] = self.categories
         return context
 
 class CommentAdd(View):
 
-    def setup(self, request, *args ,**kwargs):
-        self.product=Product.objects.get(pk=kwargs['get_id'])
+    def setup(self, request, *args, **kwargs):
+        self.product = Product.objects.get(pk=kwargs['get_id'])
         return super().setup(request, *args, **kwargs)
 
-    def post(self,request,get_id):
+    def post(self, request, get_id):
         if request.POST['body'] and request.user.is_authenticated:
-            comment=Comment(user=request.user,product=self.product,body=request.POST['body'])
+            comment = Comment(user=request.user, product=self.product, body=request.POST['body'])
             comment.save()
-            messages.success(request,'comment add  ','success')
-        else :
-            messages.success(request,'you are not login or text is empty','danger')
-        return redirect('products:detail',self.product.slug)
+            messages.success(request, 'comment add  ', 'success')
+        else:
+            messages.success(request, 'you are not login or text is empty', 'danger')
+        return redirect('products:detail', self.product.slug)
+
 
 class LikeAdd(View):
 
     def setup(self, request, *args, **kwargs):
-        self.product=Product.objects.get(pk=kwargs['get_id'])
+        self.product = Product.objects.get(pk=kwargs['get_id'])
         return super().setup(request, *args, **kwargs)
 
-    def get(self,request,get_id):
+    def get(self, request, get_id):
         if self.product.is_like(request.user):
-            like=Like(user=request.user,product=self.product)
+            like = Like(user=request.user, product=self.product)
             like.save()
-            messages.success(request,'Like Done  ','success')
+            messages.success(request, 'Like Done  ', 'success')
         else:
-            messages.success(request,'You cannot like once more ','danger')
-        return redirect('products:detail',self.product.slug)
+            messages.success(request, 'You cannot like once more ', 'danger')
+        return redirect('products:detail', self.product.slug)

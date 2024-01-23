@@ -49,12 +49,11 @@
 					</ul>
 					<ul class="header-links pull-right">
 						{% if request.user.is_authenticated %}
-						<li><a ><i class="fa fa-user-o"></i> {{request.user.username}}</a></li>
+						<li><a href="#"><i class="fa fa-user-o"></i> {{request.user.username|capfirst}}</a></li>
 						<li><a href="{% url 'account:logout' %}"><i class="fa fa-user-o"></i> Logout</a></li>
 						<li><a href="{% url 'account:login' %}"><i class="fa fa-user-o"></i> Login</a></li>
 						{% else %}
 						<li><a href="{% url 'account:login' %}"><i class="fa fa-user-o"></i> Login</a></li>
-						<li><a href="#"><i class="fa fa-user-o"></i> SignUp</a></li>
 						{% endif %}
 					</ul>
 				</div>
@@ -135,14 +134,7 @@
 								</div>
 								<!-- /Cart -->
 
-								<!-- Menu Toogle -->
-								<div class="menu-toggle">
-									<a href="#">
-										<i class="fa fa-bars"></i>
-										<span>Menu</span>
-									</a>
-								</div>
-								<!-- /Menu Toogle -->
+
 							</div>
 						</div>
 						<!-- /ACCOUNT -->
@@ -206,6 +198,7 @@
 		</div>
 		<!-- /SECTION -->
 {% block content %}
+
         {% endblock %} }
 		<!-- NEWSLETTER -->
 		<div id="newsletter" class="section">
