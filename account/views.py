@@ -9,6 +9,10 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm
 from .models import CustomUser
+from django.core.mail import send_mail
+from django.conf import settings
+from django.db.models import Q, F
+
 
 class Login(View):
     template_class = "account/login.html"
@@ -21,42 +25,64 @@ class Login(View):
 
     def setup(self, request, *args, **kwargs) -> None:
         self.next = request.GET.get("next")
+        request.session["next"] = self.next
         return super().setup(request, *args, **kwargs)
 
     def get(self, request):
         return render(request, self.template_class)
 
-    # def post(self, request):
-    #     if request.POST.get("email"):
-    #         if request.POST.get("pass"):
-    #             email = request.POST.get("email")
-    #             password = request.POST.get("pass")
-    #             user = authenticate(username=email, password=password)
-    #             if user:
-    #                 login(request, user)
-    #                 if self.next:
-    #                     return redirect(self.next)
-    #                 return redirect("core:home")
-    #             else:
-    #                 messages.success(request, 'User Or Password is Wrong ', 'danger')
-    #                 return render(request, self.template_class)
-    #         else:
-    #             messages.success(request, 'field password Is Empty ', 'danger')
-    #             return render(request, self.template_class)
-    #     else:
-    #         messages.success(request, 'field email or phone Is Empty ', 'danger')
-    #         return render(request, self.template_class)
-
     def post(self, request):
         if request.POST.get("email"):
             email = request.POST.get("email")
-            user = CustomUser.objects.filter(username= email).exists()
+            user = CustomUser.objects.filter(Q(username=email) | Q(phone_number=email)).exists()
+            email = CustomUser.objects.filter(email=email).exists()
             if user:
-                context = {
-                    "type": "username"
-                }
-                return redirect(request, "", {})
+                request.session["username"] = request.POST.get("email")
+                return redirect("account:password")
+            elif email:
+                return redirect("account:password")
+            else:
+                messages.success(request, 'username or phone number not found ', 'danger')
+                return render(request, self.template_class)
+        else:
+            messages.success(request, 'field email or phone Is Empty ', 'danger')
+            return render(request, self.template_class)
 
+
+class Password(Login):
+    template_class = "account/password.html"
+
+    def post(self, request):
+        if request.POST.get("pass"):
+            email = request.session.get("username")
+            password = request.POST.get("pass")
+            user = authenticate(username=email, password=password)
+            if user:
+                login(request, user)
+                if self.next:
+                    return redirect(self.next)
+                return redirect("core:home")
+            else:
+                messages.success(request, 'Password is Wrong ', 'danger')
+                return render(request, self.template_class)
+        else:
+            messages.success(request, 'field Password Is Empty ', 'danger')
+            return render(request, self.template_class)
+
+
+# def email(request):
+#     if request.method == "POST":
+#         message = request.POST["message"]
+#         email = request.POST["email"]
+#         name = request.POST["name"]
+#         send_mail(
+#             name,
+#             message,
+#             'settings.EMAIL_HOST_USER',
+#             [email],
+#             fail_silently=False
+#         )
+#     return render(request, 'account/password.html')
 
 
 class Logout(LoginRequiredMixin, View):
