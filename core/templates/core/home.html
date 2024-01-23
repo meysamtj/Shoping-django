@@ -4,12 +4,10 @@
 {% block navbar %}
 <ul class="main-nav nav navbar-nav">
 	<li class="active"><a href="{% url 'core:home' %}">Home</a></li>
-	<li><a href="#">Hot Deals</a></li>
 	<li ><a href="{% url 'core:categories' %}">Categories</a></li>
-	<li><a href="#">Laptops</a></li>
-	<li><a href="#">Smartphones</a></li>
-	<li><a href="#">Cameras</a></li>
-	<li><a href="#">Accessories</a></li>
+	{% for item in items %}
+		<li><a href="{% url 'products:product' item.id %}">{{item.name}}</a></li>
+	{% endfor %}
 </ul>
 {% endblock%}
 {%  block content %}
@@ -92,7 +90,7 @@
 								<div id="tab1" class="tab-pane active">
 									<div class="products-slick" data-nav="#slick-nav-1">
 										<!-- product -->
-										{% for product in products %}
+										{% for like,product in products %}
 										<div class="product">
 											<div class="product-img">
                                                 <img src="{{ product.image.url }}" alt="shop">
@@ -124,8 +122,14 @@
 													<i class="fa fa-star"></i>
 												</div>
 												<div class="product-btns">
-													<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">like</span></button>
-													<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+													{% if like %}
+													<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart-o"></i></a><span class="tooltipp">Like</span></button>
+													 {% else %}
+													<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart text-danger"></i></a><span class="tooltipp">Like</span></button>
+													{% endif %} 
+													
+													<span> likes : {{product.likes.count}} </span>
+													<button class="quick-view"><a class="quick-view" href="{% url 'products:detail' product.slug  %}"><i class="fa fa-eye"></i></a><span class="tooltipp">quick view</span></button>
 												</div>
 											</div>
 											<div class="add-to-cart">
@@ -260,8 +264,13 @@
 													<i class="fa fa-star"></i>
 												</div>
 												<div class="product-btns">
-													<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">like</span></button>
-													<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+													{% comment %} {% if like %} {% endcomment %}
+													<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart-o"></i></a><span class="tooltipp">Like</span></button>
+													 {% comment %} {% else %}
+													<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart text-danger"></i></a><span class="tooltipp">Like</span></button>
+													{% endif %}  {% endcomment %}
+													<span>likes : {{product.product_like.count}} </span>
+													<button class="quick-view"><a class="quick-view" href="{% url 'products:detail' product.slug  %}"><i class="fa fa-eye"></i></a><span class="tooltipp">quick view</span></button>
 												</div>
 											</div>
 											<div class="add-to-cart">
@@ -461,7 +470,7 @@
 
 						<div class="products-widget-slick" data-nav="#slick-nav-5">
 							<div>
-								{% for product in products  %}
+								{% for like,product in products  %}
 									{% if forloop.counter <= 3 %}
 										<div class="product-widget">
 											<div class="product-img">
@@ -482,7 +491,7 @@
 								{% endfor %}
 							</div>
 							<div>
-								{% for product in products  %}
+								{% for like,product in products  %}
 									{% if forloop.counter  > 3 and forloop.counter <= 6  %}
 										<div class="product-widget">
 											<div class="product-img">
@@ -503,7 +512,7 @@
 								{% endfor %}
 							</div>
 							<div>
-								{% for product in products  %}
+								{% for like,product in products  %}
 									{% if forloop.counter  > 6 and forloop.counter <= 9  %}
 										<div class="product-widget">
 											<div class="product-img">

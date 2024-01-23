@@ -3,12 +3,10 @@
 {% block navbar %}
 <ul class="main-nav nav navbar-nav">
 	<li ><a href="{% url 'core:home' %}">Home</a></li>
-	<li><a href="#">Hot Deals</a></li>
 	<li class="active"><a href="{% url 'core:categories' %}">Categories</a></li>
-	<li><a href="#">Laptops</a></li>
-	<li><a href="#">Smartphones</a></li>
-	<li><a href="#">Cameras</a></li>
-	<li><a href="#">Accessories</a></li>
+	{% for  item in categories %}
+		<li><a href="{% url 'products:product' item.id %}">{{item.name}}</a></li>
+	{% endfor %}
 </ul>
 {% endblock%}
 {%  block content %}

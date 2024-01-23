@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, RedirectView, ListView, DetailView
-from .models import Product, Image, Comment, Like
+from .models import Product, Image, Comment, Like, Category
 from orders.models import OrderItem
 from django.core.paginator import Paginator
 from django.db.models import Q, F
@@ -12,12 +12,13 @@ from django.contrib import messages
 
 
 class Products(ListView):
-    template_name = 'product/product(1).html'
-    model = Product  # object Product.objects.filter(id=pk)
+    template_name = 'product/product.html'
     context_object_name = 'products_all'
     paginate_by = 6
 
     def get_queryset(self):
+        self.category_id = self.kwargs['pk']
+        self.categories = Category.objects.all()[:3]
         return [ (product.is_like(self.request.user),product) for product in Product.objects.filter(category__id=self.kwargs['pk']) ] 
 
     def get_context_data(self, **kwargs):
@@ -26,18 +27,22 @@ class Products(ListView):
         context["top_cells"] = OrderItem.top_cell_product()
         context["ten_discounts"] = Product.objects.is_discount()
         context["len"]= len(self.get_queryset())
+        context["category_id"] = self.category_id
+        context["items"] = self.categories
         return context
 
 
 class DetailProduct(ListView):
     template_name = 'product/details.html'
-    model = Product  # object Car.objects.filter(id=pk)
     slug_field = 'slug'
     context_object_name = 'product'
 
     # queryset=Product.objects.get(slug=slug_field)
     def get_queryset(self):
-        return Product.objects.get(slug=self.kwargs['slug'])
+        self.categories = Category.objects.all()[:3]
+        product = Product.objects.get(slug=self.kwargs['slug'])
+        self.category_id = product.category.id
+        return product
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -50,10 +55,12 @@ class DetailProduct(ListView):
         page_objj=paginator.get_page(page_number)
         context["page_obj"]=page_objj
         context['liked']=True if self.get_queryset().is_like(self.request.user) else False 
+        context["category_id"] = self.category_id
+        context["items"] = self.categories
         return context
 
 class Search(ListView):
-    template_name = 'product/product(1).html'
+    template_name = 'product/product.html'
     context_object_name = 'products_all'
     paginate_by = 6
 

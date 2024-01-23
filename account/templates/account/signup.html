@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container text-center d-flex justify-content-center align-items-center align-items-center mt-5">
+    <div class="col-4 py-4 text-light rounded-5" style="background-color: rgb(126, 145, 255);">
+<form method="post">
+    {% csrf_token %}
+    {{ form | crispy }}
+    <button class="bg-white border-0 py-2 px-4 rounded-5" type="submit">ورود</button>
+</form>
+</div>
+</div>
+
+
+
+{% endblock content %}

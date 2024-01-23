@@ -151,3 +151,6 @@ AUTH_USER_MODEL = 'account.CustomUser'
 AUTHENTICATION_BACKENDS  = [
     "account.authenticate.BakendEmail",
 ]
+
+#login_required
+LOGIN_REDIRECT_URL = 'account:login'

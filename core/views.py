@@ -19,7 +19,7 @@ from orders.models import OrderItem
 
 
 class Home(ListView):
-    template_name = 'core/home(1).html'
+    template_name = 'core/home.html'
     model = Category
     queryset = Category.objects.all()[:3]
     context_object_name = 'items'
@@ -54,6 +54,7 @@ class ShowCategorys(ListView):
         context["products"] = Product.objects.ten_product_new()
         context["top_cells"] = OrderItem.top_cell_product()
         context["ten_discounts"] = Product.objects.is_discount()
+        context["categories"] = Category.objects.all()
         return context
 
 # class NewProduct(ListView):

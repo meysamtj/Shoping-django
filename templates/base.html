@@ -48,8 +48,14 @@
 						<li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
 					</ul>
 					<ul class="header-links pull-right">
-						<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-						<li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+						{% if request.user.is_authenticated %}
+						<li><a ><i class="fa fa-user-o"></i> {{request.user.username}}</a></li>
+						<li><a href="{% url 'account:logout' %}"><i class="fa fa-user-o"></i> Logout</a></li>
+						<li><a href="{% url 'account:login' %}"><i class="fa fa-user-o"></i> Login</a></li>
+						{% else %}
+						<li><a href="{% url 'account:login' %}"><i class="fa fa-user-o"></i> Login</a></li>
+						<li><a href="#"><i class="fa fa-user-o"></i> SignUp</a></li>
+						{% endif %}
 					</ul>
 				</div>
 			</div>
@@ -86,17 +92,7 @@
 						<!-- ACCOUNT -->
 						<div class="col-md-3 clearfix">
 							<div class="header-ctn">
-								<!-- Wishlist -->
-								<div>
-									<a href="#">
-										<i class="fa fa-heart-o"></i>
-										<span>Your Wishlist</span>
-										<div class="qty">2</div>
-									</a>
-								</div>
-								<!-- /Wishlist -->
-
-								<!-- Cart -->
+															<!-- Cart -->
 								<div class="dropdown">
 									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
 										<i class="fa fa-shopping-cart"></i>

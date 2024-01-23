@@ -25,5 +25,5 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ( 'email','username','phone_number')
 
 class MyLoginForm(forms.Form):
-    username = forms.CharField(max_length=50, widget=forms.TextInput(attrs = {"placeholder": "موبایل یا ایمیل"}))
+    username = forms.CharField(max_length=50, widget=forms.TextInput(attrs = {"placeholder": "Phone or Email"}))
     password = forms.CharField(widget=forms.PasswordInput())
