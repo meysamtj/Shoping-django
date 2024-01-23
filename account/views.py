@@ -12,6 +12,7 @@ from .models import CustomUser
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Q, F
+from .otpcode import OTPGenerator
 
 
 class Login(View):
@@ -40,7 +41,16 @@ class Login(View):
                 request.session["username"] = request.POST.get("email")
                 return redirect("account:password")
             elif email:
-                return redirect("account:password")
+                otp_gen = OTPGenerator()
+                otp = otp_gen.generate_otp()
+                send_mail(
+                    "otpcode",
+                    otp,
+                    'settings.EMAIL_HOST_USER',
+                    [request.POST.get("email")],
+                    fail_silently=False
+                )
+                return redirect("account:email")
             else:
                 messages.success(request, 'username or phone number not found ', 'danger')
                 return render(request, self.template_class)
@@ -68,6 +78,10 @@ class Password(Login):
         else:
             messages.success(request, 'field Password Is Empty ', 'danger')
             return render(request, self.template_class)
+
+
+class Email(Password):
+    template_class = "account/email.html"
 
 
 # def email(request):
