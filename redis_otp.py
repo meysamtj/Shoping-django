@@ -26,6 +26,6 @@ class saveRedisotp:
 
 
 if __name__ == '__main__':
-    redis = ghazanfar()
+    redis = saveRedisotp()
     redis.set_redis("famliy", "tajik")
     redis.my_delete("num")

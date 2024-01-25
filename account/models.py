@@ -32,10 +32,11 @@ class CustomUser(AbstractUser, BaseModel):
     mobile_regex = RegexValidator(regex='^(\+98|0)?9\d{9}$',
                                   message="Phone number must be entered in the format: '+989199999933'.",
                                   )
+    is_active = models.BooleanField(default=False, verbose_name=_("is_active"))
     phone_number = models.CharField(validators=[mobile_regex], max_length=20, unique=True, verbose_name=_("phone number"))
     user_type = models.CharField(max_length=10, choices=CUSTOMERUSER_STATUS, default=CUSTOMERUSER_CUSTOMER, verbose_name=_("user type"))
     image = models.ImageField(upload_to='profiles/', blank=True, verbose_name=_("image"))
-    national_code = models.PositiveSmallIntegerField( verbose_name=_("national code"))
+    national_code = models.PositiveSmallIntegerField( verbose_name=_("national code"),blank=True,null=True)
     gender = models.CharField(max_length=5, choices=GENDER_SELECT, default=GENDER_MEN, verbose_name=_("gender"))
     objects = CustomUserManager()
     USERNAME_FIELD = "username"

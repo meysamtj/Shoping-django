@@ -44,7 +44,9 @@
 	<div class="limiter ">
 		<div class="container-login100 ">
 			<div class="wrap-login100">
-                <img src="{{ request.user.image.url }}" class='img-circle' alt="Cinque Terre" width="304" height="236">
+				{% if request.user.image %}
+				<img src="{{ request.user.image.url }}" class='img-circle' alt="Cinque Terre" width="304" height="236">
+				{% endif %}
 				<form class="login100-form validate-form " enctype="multipart/form-data" method="post" novalidate>
                     {% csrf_token %}
                     {{ form | crispy }}

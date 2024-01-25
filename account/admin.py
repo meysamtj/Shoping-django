@@ -13,9 +13,9 @@ class CustomUserAdmin(UserAdmin):
         ('Others', {'fields': ('user_type','birth_day', 'phone_number', 'image')}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('user_type','email', 'birth_day', 'phone_number', 'image')}),
+        (None, {'fields': ('user_type','email', 'birth_day', 'phone_number', 'image', 'national_code')}),
     )
-
+    readonly_fields = ['last_login','date_joined']
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Address)

@@ -9,11 +9,11 @@ from .models import CustomUser
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Q
+from redis_otp import saveRedisotp
 from .otpcode import OTPGenerator
-
+from .tasks import send_otp_to_phone_number_task
 
 class Login(View):
     template_class = "account/login.html"
@@ -25,12 +25,15 @@ class Login(View):
             return super().dispatch(request, *args, **kwargs)
 
     def setup(self, request, *args, **kwargs) -> None:
-        self.next = request.GET.get("next")
-        request.session["next"] = self.next
+        self.next =''
+        if request.GET.get("next"):
+            self.next = request.GET.get("next")
+            # request.session["next"] = self.next
+            saveRedisotp.set_redis('next',self.next)
         return super().setup(request, *args, **kwargs)
 
     def get(self, request):
-        print(request.session.get('username'))
+        # print(request.session.get('username'))
         return render(request, self.template_class)
 
     # def post(self, request):
@@ -63,20 +66,17 @@ class Login(View):
             # if request.session.get("email"):
             #     del request.session['email']
             if user:
-                request.session["username"] = request.POST.get("email")
+                # request.session["username"] = request.POST.get("email")
+                saveRedisotp.set_redis('username',request.POST.get("email"))
                 return redirect("account:password")
             elif email:
-                request.session["email"] = request.POST.get("email")
+                # request.session["email"] = request.POST.get("email")
+                saveRedisotp.set_redis('email',request.POST.get("email"))
                 otp_code = OTPGenerator()
                 otp = otp_code.generate_otp()
                 request.session["otp_code"] = otp
-                send_mail(
-                    'subject',
-                    f' ACTIVE CODE : {otp}',
-                    'setting.EMAIL_HOST_USER',
-                    [request.POST.get("email")],
-                    fail_silently=False
-                )
+                saveRedisotp.set_redis('otp_code',otp)
+                send_otp_to_phone_number_task.delay(request.POST.get("email"), otp)
                 return redirect("account:confirm_email")
             else:
                 messages.success(request, 'username or phone number not found ', 'danger')
@@ -92,7 +92,9 @@ class Password(Login):
     def post(self, request):
         print('hello')
         if request.POST.get("pass"):
-            email = request.session.get("username")
+            # email = request.session.get("username")
+            email=str(saveRedisotp.get_redis('username'))
+            email=email[2:-1]
             password = request.POST.get("pass")
             user = authenticate(username=email, password=password)
             if user:
@@ -214,8 +216,14 @@ class ConfirmEmail(View):
 
     def post(self, request):
         if request.POST.get("otp"):
-            email = request.session.get("email")
-            next = request.session.get("next")
+            # email = request.session.get("email")
+            email=str(saveRedisotp.get_redis('email'))
+            email=email[2:-1]
+            # next = request.session.get("next")
+            next=''
+            if saveRedisotp.get_redis('next'):
+                next=str(saveRedisotp.get_redis('next'))
+                next=next[2:-1]
             otp_user = request.POST.get("otp")
             # print('OTP USER',otp_user)
             # print('OTP EMAIL',otp_email)
@@ -230,7 +238,9 @@ class ConfirmEmail(View):
             #         user_object.save()
             print(email)
             print(otp_user)
-            otp = request.session.get("otp_code")
+            # otp = request.session.get("otp_code")
+            otp=str(saveRedisotp.get_redis('otp_code'))
+            otp=otp[2:-1]
             print('otp', otp)
             user = authenticate(email=email, otpcode=otp_user, otp_code_send=otp)
             print(user)

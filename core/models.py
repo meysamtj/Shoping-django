@@ -14,7 +14,7 @@ class LogicalQuerySet(models.QuerySet):
 class LogicalManager(models.Manager):
 
     def get_queryset(self):
-        return LogicalQuerySet(self.model).filter(is_deleted=False, is_active=True)
+        return LogicalQuerySet(self.model).filter(is_deleted=False)
 
     def is_discount(self):
         return LogicalQuerySet(self.model).filter(is_deleted=False, is_active=True, discount__isnull=False)[:10]

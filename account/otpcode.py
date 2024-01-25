@@ -6,10 +6,10 @@ class OTPGenerator:
         self.length = length
 
     def generate_otp(self):
-        digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        digits = "ABCDEFGHJKLMNOPQRSTUVWXYZ0123456789"
         otp = ""
         for i in range(self.length):
-            otp += digits[random.randint(0, 35)]
+            otp += digits[random.randint(0, 34)]
             
         return otp
 
