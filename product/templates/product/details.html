@@ -83,13 +83,14 @@
 							</div>
 
 							<ul class="product-btns">
-								{% if liked %}
+								{% if liked or not request.user.is_authenticated %}
 								<li><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart-o "></i> like</a></li>
 								{% else %}
 								<li><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart text-danger"></i> like</a></li>
 								
 								{% endif %}
-								<p>likes : {{product.likes.count}}</p>
+											
+								<p>likes : {{product.like_count}}</p>
 
 							</ul>
 

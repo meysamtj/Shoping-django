@@ -5,6 +5,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from core.models import BaseModel
 from django.utils.translation import gettext_lazy as _
 from .manager import CustomUserManager
+from PIL import Image
 
 
 
@@ -12,10 +13,12 @@ class CustomUser(AbstractUser, BaseModel):
     CUSTOMERUSER_EMPLOYEE = 'employee'
     CUSTOMERUSER_CUSTOMER = 'customer'
     CUSTOMERUSER_MANAGER = 'manager'
+    CUSTOMERUSER_SUPERVIZOR = 'supervisor'
     CUSTOMERUSER_STATUS = (
         (CUSTOMERUSER_EMPLOYEE, 'employee'),
         (CUSTOMERUSER_CUSTOMER, 'customer'),
-        (CUSTOMERUSER_MANAGER, 'manager')
+        (CUSTOMERUSER_MANAGER, 'manager'),
+        (CUSTOMERUSER_SUPERVIZOR, 'supervisor')
     )
     GENDER_MEN = "men"
     GENDER_WOMEN = "women"
@@ -28,7 +31,7 @@ class CustomUser(AbstractUser, BaseModel):
     mobile_regex = RegexValidator(regex='^(\+98|0)?9\d{9}$',
                                   message="Phone number must be entered in the format: '+989199999933'.")
     phone_number = models.CharField(validators=[mobile_regex], max_length=20, unique=True, verbose_name=_("phone number"))
-    user_type = models.CharField(max_length=8, choices=CUSTOMERUSER_STATUS, default=CUSTOMERUSER_CUSTOMER, verbose_name=_("user type"))
+    user_type = models.CharField(max_length=10, choices=CUSTOMERUSER_STATUS, default=CUSTOMERUSER_CUSTOMER, verbose_name=_("user type"))
     image = models.ImageField(upload_to='profiles/', blank=True, verbose_name=_("image"))
     national_code = models.CharField(max_length=10, verbose_name=_("national code"))
     gender = models.CharField(max_length=5, choices=GENDER_SELECT, default=GENDER_MEN, verbose_name=_("gender"))
@@ -38,6 +41,10 @@ class CustomUser(AbstractUser, BaseModel):
 
     def __str__(self):
         return self.email
+
+    
+
+    
 
 
 class Address(BaseModel):

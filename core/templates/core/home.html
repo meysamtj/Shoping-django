@@ -121,11 +121,12 @@
 													<i class="fa fa-star"></i>
 												</div>
 												<div class="product-btns">
-													{% if like %}
-													<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart-o"></i></a><span class="tooltipp">Like</span></button>
-													 {% else %}
-													<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart text-danger"></i></a><span class="tooltipp">Like</span></button>
-													{% endif %} 
+													{% if like or not request.user.is_authenticated %}
+											<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart-o"></i></a><span class="tooltipp">Like</span></button>
+											{% else %}
+											<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart text-danger"></i></a><span class="tooltipp">Like</span></button>								
+											{% endif %}
+											 
 													
 													<span> likes : {{product.likes.count}} </span>
 													<button class="quick-view"><a class="quick-view" href="{% url 'products:detail' product.slug  %}"><i class="fa fa-eye"></i></a><span class="tooltipp">quick view</span></button>
@@ -263,12 +264,8 @@
 													<i class="fa fa-star"></i>
 												</div>
 												<div class="product-btns">
-													{% comment %} {% if like %} {% endcomment %}
-													<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart-o"></i></a><span class="tooltipp">Like</span></button>
-													 {% comment %} {% else %}
-													<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart text-danger"></i></a><span class="tooltipp">Like</span></button>
-													{% endif %}  {% endcomment %}
-													<span>likes : {{product.product_like.count}} </span>
+													
+													<span>likes : {{product.like_count}} </span>
 													<button class="quick-view"><a class="quick-view" href="{% url 'products:detail' product.slug  %}"><i class="fa fa-eye"></i></a><span class="tooltipp">quick view</span></button>
 												</div>
 											</div>

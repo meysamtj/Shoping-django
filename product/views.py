@@ -20,8 +20,11 @@ class Products(ListView):
     def get_queryset(self):
         self.category_id = self.kwargs['pk']
         self.categories = Category.objects.all()[:3]
-        return [(product.is_like(self.request.user), product) for product in
-                Product.objects.filter(category__id=self.kwargs['pk'])]
+        if self.request.user.is_authenticated:
+            return [(product.can_like(self.request.user), product) for product in
+                    Product.objects.filter(category__id=self.kwargs['pk'])]
+        else:
+            return [(False, product) for product in Product.objects.filter(category__id=self.kwargs['pk'])]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -31,6 +34,8 @@ class Products(ListView):
         context["len"] = len(self.get_queryset())
         context["category_id"] = self.category_id
         context["items"] = self.categories
+        if Category.objects.filter(category__id=self.kwargs['pk']).exists():
+            context['category'] = Category.objects.filter(category__id=self.kwargs['pk'])
         return context
 
 
@@ -56,9 +61,12 @@ class DetailProduct(ListView):
         page_number = self.request.GET.get("page", 1)
         page_objj = paginator.get_page(page_number)
         context["page_obj"] = page_objj
-        context['liked'] = True if self.get_queryset().is_like(self.request.user) else False
         context["category_id"] = self.category_id
         context["items"] = self.categories
+        if self.request.user.is_authenticated:
+            context['liked'] = True if self.get_queryset().can_like(self.request.user) else False
+        else:
+            context['liked'] = False
         return context
 
 
@@ -71,11 +79,19 @@ class Search(ListView):
         self.categories = Category.objects.all()[:3]
         if self.request.GET.get("search"):
             search_query = self.request.GET.get('search')
-            search = [(product.is_like(self.request.user), product) for product in Product.objects.filter(
-                Q(name__icontains=search_query) | Q(category__name__icontains=search_query))]
+            if self.request.user.is_authenticated:
+                search = [(product.can_like(self.request.user), product) for product in Product.objects.filter(
+                    Q(name__icontains=search_query) | Q(category__name__icontains=search_query))]
+            else:
+                search = [(False, product) for product in Product.objects.filter(
+                    Q(name__icontains=search_query) | Q(category__name__icontains=search_query))]
             return search
+
         else:
-            return [(product.is_like(self.request.user), product) for product in Product.objects.all()]
+            if self.request.user.is_authenticated:
+                return [(product.can_like(self.request.user), product) for product in Product.objects.all()]
+            else:
+                return [(False, product) for product in Product.objects.all()]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -93,12 +109,15 @@ class CommentAdd(View):
         return super().setup(request, *args, **kwargs)
 
     def post(self, request, get_id):
-        if request.POST['body'] and request.user.is_authenticated:
-            comment = Comment(user=request.user, product=self.product, body=request.POST['body'])
-            comment.save()
-            messages.success(request, 'comment add  ', 'success')
+        if request.user.is_authenticated:
+            if request.POST['body']:
+                comment = Comment(user=request.user, product=self.product, body=request.POST['body'])
+                comment.save()
+                messages.success(request, 'comment add    ', 'success')
+            else:
+                messages.success(request, 'your text is empty', 'danger')
         else:
-            messages.success(request, 'you are not login or text is empty', 'danger')
+            messages.success(request, 'you are not login ', 'danger')
         return redirect('products:detail', self.product.slug)
 
 
@@ -106,13 +125,28 @@ class LikeAdd(View):
 
     def setup(self, request, *args, **kwargs):
         self.product = Product.objects.get(pk=kwargs['get_id'])
+        self.like = Like.objects.deleted()
         return super().setup(request, *args, **kwargs)
 
     def get(self, request, get_id):
-        if self.product.is_like(request.user):
-            like = Like(user=request.user, product=self.product)
-            like.save()
-            messages.success(request, 'Like Done  ', 'success')
+        if request.user.is_authenticated:
+
+            if self.product.can_like(request.user) and self.product.exist_like(request.user):
+                like = Like.objects.get(product=self.product, user=request.user)
+                like.undelete()
+                messages.success(request, 'Like Done  ', 'success')
+
+            elif self.product.can_like(request.user) and not self.product.exist_like(request.user):
+                like = Like(user=request.user, product=self.product)
+                like.save()
+                messages.success(request, 'Like Done  ', 'success')
+
+            else:
+                like = Like.objects.get(product=self.product, user=request.user)
+                like.delete()
+                # like.is_deleted=True
+                # like.save()
+                messages.success(request, ' Unlike Done ', 'warning')
         else:
-            messages.success(request, 'You cannot like once more ', 'danger')
+            messages.success(request, 'You are not Login ', 'danger')
         return redirect('products:detail', self.product.slug)

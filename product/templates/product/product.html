@@ -11,6 +11,21 @@
 				<!-- row -->
 				<div class="row">
 					<!-- shop -->
+					{% if category %}
+					{% for cat in category %}
+					<div class="col-md-4 col-xs-6">
+						<div class="shop">
+							<div class="shop-img">
+                                <img src="{{ cat.image.url }}" alt="shop">
+							</div>
+							<div class="shop-body">
+								<h3>{{cat.name}}<br>Collection</h3>
+								<a href="{% url 'products:product' cat.id %}" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+				{% endif %}
 							<!-- product -->
                 {% for like,product in products_all %}
 							<div class="col-md-4 col-xs-6">
@@ -45,15 +60,16 @@
 										</div>
 										<div class="product-btns">
 											
-											{% if like %}
+											{% if like or not request.user.is_authenticated %}
 											<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart-o"></i></a><span class="tooltipp">Like</span></button>
 											{% else %}
 											<button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart text-danger"></i></a><span class="tooltipp">Like</span></button>								
 											{% endif %}
 											
 											
+											
 											{% comment %} <button class="add-to-wishlist"><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart-o"></i></a><span class="tooltipp">Like</span></button> {% endcomment %}
-													<span>likes : {{product.product_like.count}} </span>
+													<span>likes : {{product.like_count}} </span>
 													<button class="quick-view"><a class="quick-view" href="{% url 'products:detail' product.slug  %}"><i class="fa fa-eye"></i></a><span class="tooltipp">quick view</span></button>
 										</div>
 									</div>

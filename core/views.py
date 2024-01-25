@@ -26,10 +26,13 @@ class Home(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["products"] = [(product.is_like(self.request.user),product) for product in Product.objects.ten_product_new()] 
-        # context["products"] = Product.objects.ten_product_new()
-        context["top_cells"] = OrderItem.top_cell_product()
-        context["ten_discounts"] = Product.objects.is_discount()
+        if self.request.user.is_authenticated :
+            context["products"] = [ (product.can_like(self.request.user),product) for product in Product.objects.ten_product_new()]
+        else :
+            context["products"] = [ (False,product) for product in Product.objects.ten_product_new()]
+           
+        context["top_cells"] =OrderItem.top_cell_product()
+        context["ten_discounts"] =Product.objects.is_discount()
         return context
 
     # def get_context_data(self, **kwargs) :
@@ -45,18 +48,18 @@ class Home(ListView):
 
 
 class ShowCategorys(ListView):
-    template_name = 'core/categories.html'
-    model = Category
-    context_object_name = 'items'
-
+    template_name='core/categories.html'
+    model=Category
+    context_object_name='items'
+    paginate_by = 6
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["products"] = Product.objects.ten_product_new()
-        context["top_cells"] = OrderItem.top_cell_product()
-        context["ten_discounts"] = Product.objects.is_discount()
+        context["top_cells"] =OrderItem.top_cell_product()
+        context["ten_discounts"] =Product.objects.is_discount()
+        context['len']=len(self.get_queryset())
         context["categories"] = Category.objects.all()
         return context
-
 # class NewProduct(ListView):
 #     template_name='core/categories.html'
 #     model=Product

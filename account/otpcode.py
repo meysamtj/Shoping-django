@@ -10,8 +10,7 @@ class OTPGenerator:
         otp = ""
         for i in range(self.length):
             otp += digits[random.randint(0, 35)]
-            if i % 3 == 0:
-                otp += "-"
+            
         return otp
 
 

@@ -149,7 +149,7 @@ LOGIN_URL = 'account:login'
 
 # Authenticate
 AUTHENTICATION_BACKENDS = [
-    "account.authenticate.BakendEmail",
+    "account.authenticate.EmailBackend",
 ]
 
 # crispy

@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 # from orders.models import OrderItem
 from django.utils.text import gettext_lazy as _
-
+from PIL import Image as Myimage
 
 class Category(BaseModel, StatusMixin):
     name = models.CharField(max_length=255, verbose_name=_("category_name"))
@@ -62,12 +62,23 @@ class Product(BaseModel, StatusMixin):
     def like_count(self):
         return self.likes.count()
 
-    def is_like(self, user):
-        like = user.likes.filter(product=self).exists()
-        if like:
-            return  False
-        else:
+    def count_comment(self):
+        count = self.product_comment.count()
+        return count
+
+    def can_like(self, user):
+        # can=Like.objects.filter(user=user,product=product).exists()
+        can = user.likes.filter(product=self).first()
+        if can and can.is_deleted == False:
+            return False
+        return True
+
+    def exist_like(self, user):
+        # can=Like.objects.filter(user=user,product=product).exists()
+        can = user.likes.filter(product=self).exists()
+        if can:
             return True
+        return False
 
     # def counter_cell_product(self):
     #     orderitems=OrderItem.objects.filter(product=self)
@@ -81,13 +92,10 @@ class Product(BaseModel, StatusMixin):
     #     return sort_list[:10]
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            counter=1
-            self.slug = slugify(f'{self.name}')+f'-{counter}'
-            while Product.objects.filter(slug=self.slug).exists():
-                counter += 1
-            self.slug = slugify(f'{self.name}')+f'-{counter}'
+        self.slug = slugify(f'{self.name}')+f'-{self.id}'
+
         super().save(*args, **kwargs) 
+
 
 
 class Image(models.Model):
@@ -150,7 +158,7 @@ class Discount(Basemodeldiss):
             raise ValidationError({'discount_code': ('  برای مقادیر درصدی این فیلد میبایست خالی باشد')})
 
 
-class Like(models.Model):
+class Like(BaseModel):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="likes", verbose_name=_("user"))
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="likes", verbose_name=_("product"))
 
