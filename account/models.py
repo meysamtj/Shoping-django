@@ -5,7 +5,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from core.models import BaseModel
 from django.utils.translation import gettext_lazy as _
 from .manager import CustomUserManager
-from PIL import Image
+
 
 
 
@@ -27,13 +27,15 @@ class CustomUser(AbstractUser, BaseModel):
         (GENDER_WOMEN, 'Women')
     )
     email = models.EmailField(unique=True, verbose_name=_("email"))
-    birth_day = models.DateField(null=True, blank=True, verbose_name=_("birth day"))
+    birth_day = models.DateField(null=True, blank=True, verbose_name=_("birth day"),
+                                 help_text= "بین تاریخ ها را با - پر نمایید.")
     mobile_regex = RegexValidator(regex='^(\+98|0)?9\d{9}$',
-                                  message="Phone number must be entered in the format: '+989199999933'.")
+                                  message="Phone number must be entered in the format: '+989199999933'.",
+                                  )
     phone_number = models.CharField(validators=[mobile_regex], max_length=20, unique=True, verbose_name=_("phone number"))
     user_type = models.CharField(max_length=10, choices=CUSTOMERUSER_STATUS, default=CUSTOMERUSER_CUSTOMER, verbose_name=_("user type"))
     image = models.ImageField(upload_to='profiles/', blank=True, verbose_name=_("image"))
-    national_code = models.CharField(max_length=10, verbose_name=_("national code"))
+    national_code = models.PositiveSmallIntegerField( verbose_name=_("national code"))
     gender = models.CharField(max_length=5, choices=GENDER_SELECT, default=GENDER_MEN, verbose_name=_("gender"))
     objects = CustomUserManager()
     USERNAME_FIELD = "username"

@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy,reverse
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import TemplateView, RedirectView, ListView, DetailView, FormView, CreateView, DeleteView, \
     UpdateView
 from django.contrib.auth import login, authenticate, logout
-from .forms import  UserCreateForm
+from .forms import UserCreateForm, ProfileForm, PasswordForm
 from .models import CustomUser
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,6 +13,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Q
 from .otpcode import OTPGenerator
+
 
 class Login(View):
     template_class = "account/login.html"
@@ -66,9 +67,9 @@ class Login(View):
                 return redirect("account:password")
             elif email:
                 request.session["email"] = request.POST.get("email")
-                otp_code=OTPGenerator()
-                otp=otp_code.generate_otp()
-                request.session["otp_code"] =otp
+                otp_code = OTPGenerator()
+                otp = otp_code.generate_otp()
+                request.session["otp_code"] = otp
                 send_mail(
                     'subject',
                     f' ACTIVE CODE : {otp}',
@@ -95,7 +96,7 @@ class Password(Login):
             password = request.POST.get("pass")
             user = authenticate(username=email, password=password)
             if user:
-                
+
                 login(request, user)
                 if self.next:
                     return redirect(self.next)
@@ -120,8 +121,47 @@ class SingUp(CreateView):
     form_class = UserCreateForm
     # fields = ['email', 'username', 'phone_number', 'password', 'password2']
     success_url = reverse_lazy('core:home')
-    
-    
+
+
+class Profile(LoginRequiredMixin, View):
+    template_class = "account/profile.html"
+    form_class = ProfileForm
+
+    def get(self, request):
+        user = request.user
+        form = self.form_class(instance=user)
+        return render(request, self.template_class, {"form": form})
+
+    def post(self, request):
+        user = request.user
+        form = self.form_class(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return render(request, self.template_class, {"form": form})
+        return render(request, self.template_class, {"form": form})
+
+
+class ChangePassword(LoginRequiredMixin, View):
+    template_class = "account/change_password.html"
+    form_class = PasswordForm
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_class, {"form": form})
+
+    def post(self, request):
+        user = request.user
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            result = form.cleaned_data
+            if user.check_password(result["password_before"]):
+                user.set_password(result["password_new"])
+                user.save()
+                return redirect("account:profile")
+            else:
+                messages.success(request, "password is wrong", 'warning')
+                return render(request, self.template_class, {"form": form})
+        return render(request, self.template_class, {"form": form})
 
 
 class Signup2(View):
@@ -160,13 +200,14 @@ class Signup2(View):
             # if user:
             #     print('salam')
             #     login(request,user)
-            messages.success(request, 'register done\n now active account with email (otp code) and login with email ', 'success')
+            messages.success(request, 'register done\n now active account with email (otp code) and login with email ',
+                             'success')
             return redirect('account:login')
         return render(request, self.url, {'form': form})
 
 
 class ConfirmEmail(View):
-    template_class= 'account/confirm_email.html'
+    template_class = 'account/confirm_email.html'
 
     def get(self, request):
         return render(request, self.template_class)
@@ -190,8 +231,8 @@ class ConfirmEmail(View):
             print(email)
             print(otp_user)
             otp = request.session.get("otp_code")
-            print('otp',otp)
-            user=authenticate(email=email,otpcode=otp_user,otp_code_send=otp)
+            print('otp', otp)
+            user = authenticate(email=email, otpcode=otp_user, otp_code_send=otp)
             print(user)
             if user:
                 print('true2')

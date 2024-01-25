@@ -49,7 +49,7 @@
 					</ul>
 					<ul class="header-links pull-right">
 						{% if request.user.is_authenticated %}
-						<li><a href="#"><i class="fa fa-user-o"></i> {{request.user.username|capfirst}}</a></li>
+						<li><a href="{% url 'account:profile' %}"><i class="fa fa-user-o"></i> {{request.user.username|capfirst}}</a></li>
 						<li><a href="{% url 'account:logout' %}"><i class="fa fa-user-o"></i> Logout</a></li>
 						{% else %}
 						<li><a href="{% url 'account:login' %}"><i class="fa fa-user-o"></i> Login</a></li>
