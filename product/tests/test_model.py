@@ -32,7 +32,7 @@ class TestDiscount(TestCase):
 
 class TestImage(TestCase):
     def setUp(self):
-        self.product = baker.make(Product, item_name="iphone")
+        self.product = baker.make(Product, name="iphone")
         self.image = baker.make(Image, product=self.product)
 
     def test_model_str(self):
@@ -42,7 +42,7 @@ class TestImage(TestCase):
 class TestComment(TestCase):
     def setUp(self):
         self.user = baker.make(CustomUser, username="mamad", email="mamad@gmail.com")
-        self.product = baker.make(Product, item_name="iphone")
+        self.product = baker.make(Product, name="iphone")
         self.comment = baker.make(Comment, product=self.product, user = self.user)
 
     def test_model_str(self):
@@ -51,7 +51,7 @@ class TestComment(TestCase):
 class TestLike(TestCase):
     def setUp(self):
         self.user = baker.make(CustomUser, username="mamad", email="mamad@gmail.com")
-        self.product = baker.make(Product, item_name="iphone")
+        self.product = baker.make(Product, name="iphone")
         self.like = baker.make(Like, product=self.product, user = self.user)
         # self.like2 = baker.make(Like, product=self.product, user = self.user)
 
@@ -64,7 +64,7 @@ class TestLike(TestCase):
 
 class TestCategory(TestCase):
     def setUp(self):
-        self.category = baker.make(Category, category_name = "laptop", id=1)
+        self.category = baker.make(Category, name = "laptop", id=1)
 
     def test_model_str(self):
         self.assertEqual(str(self.category),'laptop')
@@ -76,11 +76,11 @@ class Testproduct(TestCase):
     def setUp(self):
         self.user_mamad = baker.make(CustomUser, username="mamad", email="mamad@gmail.com")
         self.user_meysam = baker.make(CustomUser, username="meysam", email="meysam@gmail.com")
-        self.product = baker.make(Product,id=5, item_name="iphone", inventory=30)
+        self.product = baker.make(Product,id=5, name="iphone", inventory=30)
         self.like = baker.make(Like, product=self.product, user = self.user_mamad)
         self.like2 = baker.make(Like, product=self.product, user = self.user_meysam)
         self.discount = baker.make(Discount, type="number", amount = 30000)
-        self.product_laptop = baker.make(Product, item_name="laptop", inventory=50,price= 20000 , discount=self.discount )
+        self.product_laptop = baker.make(Product, name="laptop", inventory=50,price= 20000 , discount=self.discount )
 
 
     def test_model_str(self):

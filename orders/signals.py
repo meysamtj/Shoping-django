@@ -3,7 +3,7 @@ from .models import Order, OrderItem
 from django.dispatch import receiver
 from django.db.models import signals
 
-x = 0
+
 
 
 @receiver(post_save, sender=OrderItem)

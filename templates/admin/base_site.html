@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Product Management Panel{% endblock %}
+
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %} " style=" font-family: Times New Roman, Times, serif;font-style: italic;">Manager</a>
+<img src="{% static 'admin/images/logo.png' %}" style="width: 50px; height: auto;">
+</div>
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
