@@ -7,7 +7,7 @@ from django.db.models import Q, F
 from django.views import View
 from django.core.paginator import Paginator
 from django.contrib import messages
-
+from orders.forms import CartAddForm
 
 # Create your views here.
 
@@ -67,6 +67,7 @@ class DetailProduct(ListView):
             context['liked'] = True if self.get_queryset().can_like(self.request.user) else False
         else:
             context['liked'] = False
+        context['form']= CartAddForm()
         return context
 
 

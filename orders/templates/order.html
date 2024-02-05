@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}
+{% include 'product/navbar.html' %}
+{% endblock %}
+{%  block content %}
+    <h3>Checkout</h3>
+    <p>Total: {{order.total_price}}</p>
+
+{% endblock %}

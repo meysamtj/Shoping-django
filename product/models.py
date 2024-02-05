@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 # from orders.models import OrderItem
 from django.utils.text import gettext_lazy as _
-from PIL import Image as Myimage
+# from PIL import Image as Myimage
 
 class Category(BaseModel, StatusMixin):
     name = models.CharField(max_length=255, verbose_name=_("category_name"))
@@ -57,7 +57,7 @@ class Product(BaseModel, StatusMixin):
                 raise ValidationError({'discount': ('برای تخفیف عددی نباید مقدار  تخفیف بیشتر از مبلغ محصول باشد')})
 
     def __str__(self):
-        return f'name : {self.name} | inventory : {self.inventory} '
+        return self.name
 
     def like_count(self):
         return self.likes.count()
@@ -133,7 +133,7 @@ class Discount(Basemodeldiss):
                 params={"value": value},
             )
 
-    expire = models.DateTimeField(default=timezone.now() + timedelta(days=1,hours=8, minutes=5), verbose_name=_("expire"))
+    expire = models.DateField(default=timezone.now() + timedelta(days=2), verbose_name=_("expire"))
     type = models.CharField(max_length=10, choices=TYPE_SELECT, default=TYPE_PERCENT, verbose_name=_("type"))
     max_dis = models.PositiveIntegerField(null=True, blank=True, verbose_name=_("max_dis"))
     discount_code = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("discount_code"))

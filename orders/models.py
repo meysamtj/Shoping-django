@@ -14,7 +14,7 @@ class Order(BaseModelOrder):
                                  verbose_name=_("discount"))
     total = models.PositiveIntegerField(default=0, verbose_name=_("total"))
     is_paid = models.BooleanField(default=False, verbose_name=_("is paid"))
-    slug = models.SlugField(unique=True, blank=True, max_length=255, verbose_name=_("slug"))
+    slug = models.SlugField(unique=False, blank=True, max_length=255, verbose_name=_("slug"))
 
     class Meta:
         ordering = ('is_paid', '-updated_at')
@@ -28,12 +28,14 @@ class Order(BaseModelOrder):
         return sum(item.get_cost() for item in self.orderitems.all())
     
     def save(self, *args, **kwargs):
-        if not self.slug:
-            counter=1
-            self.slug = slugify(f'{self.user}')+f'-{counter}'
-            while Order.objects.filter(slug=self.slug).exists():
-                counter += 1
-            self.slug = slugify(f'{self.user}')+f'-{counter}'
+        
+        # if not self.slug:
+        #     counter=1
+        #     self.slug = slugify(f'{self.user}')+f'-{counter}'
+        #     while Order.objects.filter(slug=self.slug).exists():
+        #         counter += 1
+        #     self.slug = slugify(f'{self.user}')+f'-{counter}'
+        self.slug = slugify(f'{self.user})-{self.id}-{self.total}-{self.is_paid}')
         super().save(*args, **kwargs)    
         
 
@@ -79,11 +81,12 @@ class OrderItem(models.Model):
     #     # product.save()
     #     super().save(*args, **kwargs)
     def save(self, *args, **kwargs):
-        if not self.slug:
-            counter=1
-            self.slug = slugify(f'{self.product.name}')+f'-{counter}'
-            while OrderItem.objects.filter(slug=self.slug).exists():
-                counter += 1
-            self.slug = slugify(f'{self.product.name}')+f'-{counter}'
+        # if not self.slug:
+        #     counter=1
+        #     self.slug = slugify(f'{self.product.name}')+f'-{counter}'
+        #     while OrderItem.objects.filter(slug=self.slug).exists():
+        #         counter += 1
+        self.slug = slugify(f'{self.product.name})-{self.order.id}-{self.order.id}-{self.quantity}- {self.id}')
+        print("meysam")
         super().save(*args, **kwargs)    
         

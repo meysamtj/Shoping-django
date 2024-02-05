@@ -74,7 +74,7 @@
 										</div>
 									</div>
 									<div class="add-to-cart">
-										<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+										<input class="add-to-cart-btn" value="add to cart" type="submit"  formmethod="post" onclick="add_to_cart(event, this)"><i class="fa fa-shopping-cart"></i>
 									</div>
 								</div>
 							</div>
@@ -461,7 +461,36 @@
 			<!-- /container -->
 		</div>
 		<!-- /SECTION -->
+<script>
+        async function add_to_cart(event, el) {
+            event.preventDefault()
 
+            const response = await fetch("/api/v1/cart/add_to_cart/", {
+                method: el.formMethod,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    pk: "{{ product.pk }}",
+                    name: "{{ product.name }}",
+                    price: {{ product.price }},
+                    discounted_price: {{ product.price_discount }},
+                    quantity: 1,
+                })
+            })
+
+            if (response.status === 200){
+                alert("add to cart ")
+            } else if (response.status === 406) {
+               alert("this is empty")
+            }else if (response.status === 400) {
+                alert("quantity > inventory")
+            } else {
+               alert("wrong proccess")
+            }
+        }
+        </script>
 
 
 {% endblock %}

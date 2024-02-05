@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% load static %}
 {% block navbar %}
 {% include 'product/navbar.html' %}
@@ -71,17 +72,21 @@
 
 
 							<div class="add-to-cart">
-								<div class="qty-label">
-									Qty
-									<div class="input-number">
-										<input type="number">
-										<span class="qty-up">+</span>
-										<span class="qty-down">-</span>
-									</div>
-								</div>
-								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                                    <input type="text" name="" id="quantity">
+									<input type="submit" class="add-to-cart-btn" value="add to cart " formmethod="post" onclick="add_to_cart(event, this)" ><i class="fa fa-shopping-cart"></i>
+
 							</div>
 
+{#                        <div class="add-to-cart">#}
+{#									<div class="col-12 col-lg-auto">#}
+{#                                        {% if product.inventory >= 1 %}#}
+{##}
+{#										<button type="submit" formmethod="post" onclick="add_to_cart(event, this)" class="btn btn-block btn-dark mb-2">add to cart <i class="ti-shopping-cart-full mr-2"></i></button>#}
+{#                                        {% else %}#}
+{#                                        <button class="btn btn-block btn-dark mb-2"> product is empty </button>#}
+{#                                        {% endif %}#}
+{#									</div>#}
+{#								</div>#}
 							<ul class="product-btns">
 								{% if liked or not request.user.is_authenticated %}
 								<li><a href="{% url 'products:like' product.id %}"><i class="fa fa-heart-o "></i> like</a></li>
@@ -380,4 +385,35 @@
 
 
         </div>
+
+      <script>
+        async function add_to_cart(event, el) {
+            event.preventDefault()
+
+            const response = await fetch("/api/v1/cart/add_to_cart/", {
+                method: el.formMethod,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    pk: "{{ product.pk }}",
+                    name: "{{ product.name }}",
+                    price: {{ product.price }},
+                    discounted_price: {{ product.price_discount }},
+                    quantity: document.getElementById('quantity').value,
+                })
+            })
+
+            if (response.status === 200){
+                alert("add to cart ")
+            } else if (response.status === 406) {
+               alert("this is empty")
+            }else if (response.status === 400) {
+                alert("quantity > inventory")
+            } else {
+               alert("wrong proccess")
+            }
+        }
+        </script>
 {% endblock %}

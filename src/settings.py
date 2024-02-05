@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'product',
     'core',
     'orders',
-    'django_celery_beat',
+    # 'django_celery_beat',
+    'rest_framework'
 
 ]
 
@@ -69,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'orders.context_processor.cart',
             ],
         },
     },
@@ -166,11 +168,11 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = "meysamtajik1376@gmail.com"
 EMAIL_HOST_PASSWORD = "kbqw wlca ydek zdii"
 
-#Redis-celery
-CELERY_BROKER_URL ='redis://localhost:6379'
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER= 'json'
-CELERY_TIMEZONE = TIME_ZONE
-CELERY_TASK_DEFAULT_QUEUE = 'default'
+# #Redis-celery
+# CELERY_BROKER_URL ='redis://localhost:6379'
+# CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER= 'json'
+# CELERY_TIMEZONE = TIME_ZONE
+# CELERY_TASK_DEFAULT_QUEUE = 'default'

@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}
+{% include 'product/navbar.html' %}
+{% endblock %}
+{%  block content %}	
+	<!-- SECTION -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+
+					<div class="col-md-7">
+						<!-- Billing Details -->
+						<div class="billing-details">
+							<div class="section-title">
+								<h3 class="title">Addresses</h3>
+								
+							</div>
+							<div><h6> Address Choice <p id="demo" name ="address" class="text-danger">No Address</p></h6> </div>
+							
+							
+							<div class="row my-2">
+							{% for item in address%}
+									<div class="col-md-4 ">
+									<div class="card my-2 " >
+										<div class="card-body">
+											<h5 class="card-title text-warning "> <p class="text-center">{{item.country}}</p></h5>
+											<p class="card-text text-secondary">{{item.city}}</p>
+											<p class="card-text text-secondary">{{item.street}}</p>
+											<button class="btn btn-success" type="button" onclick="document.getElementById('demo').innerHTML = '{{item.street}}'">Select</button>
+										</div>
+										</div>
+									</div>
+									{%empty%}
+									<p> data is empty</p>
+							{% endfor %}
+							</div>
+							
+						</div>
+						<!-- /Billing Details -->
+
+						<!-- Shiping Details -->
+						<div class="shiping-details">
+							<div class="section-title">
+								<h3 class="title">Billing address</h3>
+							</div>
+							<div class="input-checkbox">
+								<input type="checkbox" id="shiping-address">
+								<label for="shiping-address">
+									<span></span>
+									Create Address
+								</label>
+								<div class="caption">
+									<form action="{% url 'orders:create_address' %}" method= 'post'>
+										{% csrf_token %}
+									<div class="form-group">
+											<input class="input" type="text" name="country" placeholder="Country" value = "iran" required = True>
+									</div>
+									<div class="form-group">
+										<input class="input" type="text" name="city" placeholder="City" required = True>
+									</div>
+									
+									<div class="form-group">
+										<input class="input" type="text" name="street" placeholder="Street" required = True>
+									</div>
+									<div class="form-group">
+										<input class="input" type="text" name="state" placeholder="state" required = True>
+									</div>
+									<input type="submit" value="Create" class="btn btn-info" name="create">
+								</form>
+								</div>
+							</div>
+						</div>
+						<!-- /Shiping Details -->
+
+						<!-- Order notes -->
+						<div class="order-notes">
+							<textarea class="input" placeholder="Order Notes"></textarea>
+						</div>
+						<!-- /Order notes -->
+					</div>
+
+					<!-- Order Details -->
+					<div class="col-md-5 order-details">
+						<div class="section-title text-center">
+							<h3 class="title">Your Order</h3>
+						</div>
+						<div class="order-summary">
+							<div class="order-col">
+								<div><strong>PRODUCT</strong></div>
+								<div><strong>TOTAL</strong></div>
+							</div>
+							<div class="order-products">
+								{% for item in cart %}
+								<div class="order-col">
+									<div>{{item.quantity}}x {{item.product}}</div>
+									<div>${{item.price}}</div>
+								</div>
+								{% endfor %}
+							</div>
+							<div class="order-col">
+								<div>Shiping</div>
+								<div><strong>FREE</strong></div>
+							</div>
+							<div class="order-col">
+								<div><strong>TOTAL</strong></div>
+								<div><strong class="order-total">${{cart.get_total_price}}</strong></div>
+							</div>
+						</div>
+						<div class="payment-method">
+							<div class="input-radio">
+								<input type="radio" name="payment" id="payment-1">
+								<label for="payment-1">
+									<span></span>
+									Direct Bank Transfer
+								</label>
+								<div class="caption">
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+								</div>
+							</div>
+							<div class="input-radio">
+								<input type="radio" name="payment" id="payment-2">
+								<label for="payment-2">
+									<span></span>
+									Cheque Payment
+								</label>
+								<div class="caption">
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+								</div>
+							</div>
+							<div class="input-radio">
+								<input type="radio" name="payment" id="payment-3">
+								<label for="payment-3">
+									<span></span>
+									Paypal System
+								</label>
+								<div class="caption">
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+								</div>
+							</div>
+						</div>
+						
+						<a href="#" class="primary-btn order-submit">Place order</a>
+					</div>
+					<!-- /Order Details -->
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /SECTION -->
+{%endblock%}
