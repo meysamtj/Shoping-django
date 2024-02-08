@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block navbar %}
+
+{% endblock %}
+{%  block content %}
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">name</th>
+          <th scope="col">price</th>
+           <th scope="col">Discount</th>
+          <th scope="col">price with discount</th>
+          {% comment %} <th scope="col"> State </th>
+          <th scope="col"> x </th>  {% endcomment %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in object_list  %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{ item.product.name }}</td>
+          <td>{{ item.product.price }}</td>
+          <td>{{ item.product.discount }}</td>
+          <td>{{ item.product.price_discount }}</td>
+          {% comment %} <td>{{ item.country }}</td>
+          <td>{{ item.street }}</td>
+          <td>{{ item.state }}</td>
+          <td><a href="{% url 'account:delete_address' item.id %}">remove</a></td> {% endcomment %}
+        </tr>
+       {% endfor %}
+       {% comment %} <tr>
+        <td>Total</td>
+        <td colspan="4"></td>
+        <td>{{cart.get_total_price}}</td>
+       </tr> {% endcomment %}
+      </tbody>
+  </table>
+{% comment %} <a href="{% url 'order:checkout' %}" class="btn btn-primary">Checkout</a> {% endcomment %}
+<div class="pagination">
+  <span class="step-links">
+    {% if page_obj.has_previous %}
+      <li><a href="?page=1">&laquo; first</a></li>
+{#            <a href="?page=1">&laquo; first</a>#}
+      <li><a href="?page={{ page_obj.previous_page_number }}">pre</a></li>
+{#            <a href="?page={{ page_obj.previous_page_number }}">previous</a>#}
+    {% endif %}
+
+    <span class="current">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+
+    {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">next</a></li>
+{#            <a href="?page={{ page_obj.next_page_number }}">next</a>#}
+      <li><a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></li>
+{#            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>#}
+    {% endif %}
+  </span>
+</div>
+{% endblock %}

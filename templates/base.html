@@ -95,7 +95,7 @@
 									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
 										<i class="fa fa-shopping-cart"></i>
 										<span>Your Cart</span>
-										<div class="qty">{{cart|length}}</div>
+										<div class="qty" id="len">{{cart|length}}</div>
 									</a>
 									<div class="cart-dropdown">
 										<div class="cart-list">
@@ -109,14 +109,14 @@
 													<h3 class="product-name"><a href="#">{{ item.product }}</a></h3>
 													<h4 class="product-price"><span class="qty">{{item.quantity}}x</span>${{ item.price }}</h4>
 												</div>
-												<a href="{% url 'orders:remove' item.product.slug %}"><button class="delete"><i class="fa fa-close"></i></button></a>
+												<a href="{% url 'orders:remove' item.product.id %}">"><button class="delete"><i class="fa fa-close"></i></button></a>
 												
 											</div>
 											{% endfor %}
 										</div>
 										<div class="cart-summary">
-											<small>{{cart|length}} Item(s) selected</small>
-											<h5>${{cart.get_total_price}}</h5>
+											<small id="len_selected">{{cart|length}}</small> Item(s) selected
+											<h5 id="total_price">${{cart.get_total_price}}</h5>
 										</div>
 										<div class="cart-btns">
 											<a href="{% url 'orders:cart' %}">View Cart</a>

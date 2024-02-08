@@ -11,7 +11,6 @@ from orders.forms import CartAddForm
 
 # Create your views here.
 
-
 class Products(ListView):
     template_name = 'product/product.html'
     context_object_name = 'products_all'

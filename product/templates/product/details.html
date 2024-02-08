@@ -363,7 +363,8 @@
 								</div>
 							</div>
 							<div class="add-to-cart">
-								<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                                <button class="add-to-cart-btn" onclick="add_to_cart_related(event, this, { id: {{ product.id }},name: 'hello' })">Add to Cart</button>
+
 							</div>
 						</div>
 					</div>
@@ -385,8 +386,10 @@
 
 
         </div>
-
-      <script>
+    <script>
+            const len = document.getElementById('len')
+            const total_price = document.getElementById('total_price')
+            const len_selected =document.getElementById('len_selected')
         async function add_to_cart(event, el) {
             event.preventDefault()
 
@@ -399,20 +402,56 @@
                 body: JSON.stringify({
                     pk: "{{ product.pk }}",
                     name: "{{ product.name }}",
-                    price: {{ product.price }},
-                    discounted_price: {{ product.price_discount }},
+                    price: "{{ product.price }}",
+                    discounted_price: "{{ product.price_discount }}",
                     quantity: document.getElementById('quantity').value,
                 })
             })
 
             if (response.status === 200){
+                const productObject = await response.json();
                 alert("add to cart ")
+                    len.innerText = productObject.len
+                    total_price.innerText = productObject.total_price
+                    len_selected.innerText = productObject.len
             } else if (response.status === 406) {
                alert("this is empty")
             }else if (response.status === 400) {
                 alert("quantity > inventory")
             } else {
                alert("wrong proccess")
+            }
+        }
+        {#const len = document.getElementById('len')#}
+        async function add_to_cart_related(event, el, product) {
+            event.preventDefault();
+            const response = await fetch("/api/v1/cart/add_to_cart/", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    pk: product.id, // Use the product.id as pk
+                    name: product.name, // Use the product.name as name
+                    price: "2000",
+                    discounted_price: "2000",
+                    quantity: "1"
+                })
+            });
+
+            if (response.status === 200) {
+                const productObject = await response.json(); // Assuming the response contains the product object
+                console.log(productObject); // Log the product object to the console
+                alert("Added to cart");
+                len.innerText = productObject.len
+                total_price.innerText = productObject.total_price
+                len_selected.innerText = productObject.len
+            } else if (response.status === 406) {
+                alert("The cart is empty");
+            } else if (response.status === 400) {
+                alert("Quantity exceeds inventory");
+            } else {
+                alert("Something went wrong");
             }
         }
         </script>

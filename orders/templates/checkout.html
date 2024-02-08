@@ -142,7 +142,7 @@
 							</div>
 						</div>
 						
-						<a href="#" class="primary-btn order-submit">Place order</a>
+						<a href="{% url 'orders:create_order' %}" class="primary-btn order-submit">Place order</a>
 					</div>
 					<!-- /Order Details -->
 				</div>
@@ -151,4 +151,27 @@
 			<!-- /container -->
 		</div>
 		<!-- /SECTION -->
+
+    <script>
+        async function add_to_order(event, el) {
+            event.preventDefault()
+
+            const response = await fetch("/api/v1/cart/add_to_cart/", {
+                method: el.formMethod,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+
+            if (response.status === 200){
+                alert("add to order ")
+            } else if (response.status === 406) {
+               alert("this is empty")
+            }else if (response.status === 400) {
+                alert("quantity > inventory")
+            } else {
+               alert("wrong proccess")
+            }
+        }
+        </script>
 {%endblock%}

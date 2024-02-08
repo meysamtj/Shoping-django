@@ -133,8 +133,11 @@
 												</div>
 											</div>
 											<div class="add-to-cart">
-									        <input type="submit" class="add-to-cart-btn" value="add to cart " formmethod="post" onclick="add_to_cart(event, this)" ><i class="fa fa-shopping-cart"></i>
-											</div>
+                                            <button class="add-to-cart-btn"
+                                                            onclick="add_to_cart(event, this, { id: {{ product.id }},name: 'hello' })">
+                                                        Add to Cart
+                                            </button>
+                                            </div>
 										</div>
 										{% endfor %}
 										
@@ -270,7 +273,10 @@
 												</div>
 											</div>
 											<div class="add-to-cart">
-									        <input type="submit" class="add-to-cart-btn" value="add to cart " formmethod="post" onclick="add_to_cart(event, this)" ><i class="fa fa-shopping-cart"></i>
+									        <button class="add-to-cart-btn"
+                                                            onclick="add_to_cart(event, this, { id: {{ product.id }},name: 'hello' })">
+                                                        Add to Cart
+                                            </button>
 											</div>
 										</div>
 										{% endfor %}
@@ -538,36 +544,44 @@
 			<!-- /container -->
 		</div>
 		<!-- /SECTION -->
-<script>
-        async function add_to_cart(event, el) {
-            event.preventDefault()
+  <script>
+            const len = document.getElementById('len')
+            const total_price = document.getElementById('total_price')
+            const len_selected =document.getElementById('len_selected')
+             const img = document.getElementById('img')
+            const name = document.getElementById('name')
+            const price = document.getElementById('price')
+            async function add_to_cart(event, el, product) {
+                event.preventDefault();
+                const response = await fetch("/api/v1/cart/add_to_cart/", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pk: product.id, // Use the product.id as pk
+                        name: product.name, // Use the product.name as name
+                        price: "2000",
+                        discounted_price: "2000",
+                        quantity: "1"
+                    })
+                });
 
-            const response = await fetch("/api/v1/cart/add_to_cart/", {
-                method: el.formMethod,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-
-                body: JSON.stringify({
-                    pk: "{{ product.pk }}",
-                    name: "{{ product.name }}",
-                    price: {{ product.price }},
-                    discounted_price: {{ product.price_discount }},
-                    quantity: "1",
-                })
-            })
-
-            if (response.status === 200){
-                alert("add to cart ")
-            } else if (response.status === 406) {
-               alert("this is empty")
-            }else if (response.status === 400) {
-                alert("quantity > inventory")
-            } else {
-               alert("wrong proccess")
+                if (response.status === 200) {
+                    const productObject = await response.json(); // Assuming the response contains the product object
+                    console.log(productObject); // Log the product object to the console
+                    alert("Added to cart");
+                    len.innerText = productObject.len
+                    total_price.innerText = productObject.total_price
+                    len_selected.innerText = productObject.len
+                    {#name.innerText = productObject.cart_shop#}
+                } else if (response.status === 406) {
+                    alert("The cart is empty");
+                } else if (response.status === 400) {
+                    alert("Quantity exceeds inventory");
+                } else {
+                    alert("Something went wrong");
+                }
             }
-        }
         </script>
-
-
 {% endblock %}

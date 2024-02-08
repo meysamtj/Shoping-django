@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, RedirectView, ListView, DetailVie
     UpdateView
 from django.contrib.auth import login, authenticate, logout
 from .forms import UserCreateForm, ProfileForm, PasswordForm
-from .models import CustomUser
+from .models import CustomUser, Address
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -256,3 +256,17 @@ class ConfirmEmail(View):
         else:
             messages.success(request, 'field otpcode  Is Empty ', 'danger')
             return render(request, self.template_class)
+
+
+class ShowAddress(ListView):
+    template_name = 'account/address.html'
+    model = Address
+    paginate_by = 4
+
+
+class DeleteAddress(View):
+
+    def get(self, request, id):
+        address = Address.objects.get(pk=id)
+        address.delete()
+        return redirect('account:address')
