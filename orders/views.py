@@ -13,6 +13,7 @@ from .forms import CartAddForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.text import slugify
 from account.models import Address
+from django.http import HttpResponseRedirect
 
 
 class CartView(View):
@@ -64,16 +65,17 @@ class OrderDetailView(LoginRequiredMixin, View):
 class OrderCreateView(LoginRequiredMixin, APIView):
     def get(self, request):
         cart = CartApi(request)
-        order = Order.objects.create(user=request.user, is_paid=True)
+        if len(cart) != 0:
+            order = Order.objects.create(user=request.user, is_paid=True)
         # order = Order(user=request.user)
         # order.save()
-
-        for item in cart:
-            OrderItem.objects.create(order=order, product=item['product'], quantity=item['quantity'])
-            # order_item = OrderItem(order = order,Product = item['product'], quantity =item['quantity'])
-            # order_item.save()
+            for item in cart:
+                OrderItem.objects.create(order=order, product=item['product'], quantity=item['quantity'])
+                # order_item = OrderItem(order = order,Product = item['product'], quantity =item['quantity'])
+                # order_item.save()
         response = cart.delete()
         return response
+
 
 
 class CreateAddress(LoginRequiredMixin, View):

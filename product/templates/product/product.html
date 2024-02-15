@@ -479,8 +479,8 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        pk: product.id, // Use the product.id as pk
-                        name: product.name, // Use the product.name as name
+                        pk: product.id,
+                        name: product.name,
                         price: "2000",
                         discounted_price: "2000",
                         quantity: "1"
@@ -488,8 +488,8 @@
                 });
 
                 if (response.status === 200) {
-                    const productObject = await response.json(); // Assuming the response contains the product object
-                    console.log(productObject); // Log the product object to the console
+                    const productObject = await response.json();
+                    console.log(productObject);
                     alert("Added to cart");
                     len.innerText = productObject.len
                     total_price.innerText = productObject.total_price

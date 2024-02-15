@@ -1,37 +1,147 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block navbar %}
-{% include 'product/navbar.html' %}
+    {% include 'product/navbar.html' %}
 {% endblock %}
-{%  block content %}
-<table class="table table-dark table-striped">
-    <thead>
+{% block content %}
+    <table class="table table-dark table-striped">
+        <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Name</th>
-          <th scope="col">Quantity</th>
-          <th scope="col">Price</th>
-          <th scope="col">Total price</th>
-          <th scope="col"> Remove </th>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Price</th>
+            <th scope="col">Total price</th>
+            <th scope="col"> Remove</th>
         </tr>
-      </thead>
-      <tbody>
+        </thead>
+        <tbody>
         {% for item in cart %}
+            <div id="cart-items">
+            <tr>
+                <th scope="row">{{ forloop.counter  }}</th>
+                <td>{{ item.product }}</td>
+                <td >
+                    <button class="btn btn-warning" onclick="remove_from_cart(event, this, { id: {{ item.product.id }},name: 'hello' })">-</button>
+                    <small id="numbers">{{ item.quantity }}</small>
+                    <button class="btn btn-primary" onclick="add_to_cart(event, this, { id: {{ item.product.id }},name: 'hello' })">+</button>
+                </td>
+                <td>{{ item.price }}</td>
+                <td id="total_product_price">{{ item.total_price }}</td>
+                <td><a href="{% url 'orders:remove' item.product.id %}">remove</a></td>
+            </tr>
+            </div>
+
+        {% endfor %}
         <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ item.product }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.price }}</td>
-          <td>{{ item.total_price }}</td>
-          <td><a href="{% url 'orders:remove' item.product.id %}">remove</a></td>
+            <td>Total</td>
+            <td colspan="4"></td>
+            <td id="total_cart">{{ cart.get_total_price }}</td>
         </tr>
-       {% endfor %}
-       <tr>
-        <td>Total</td>
-        <td colspan="4"></td>
-        <td>{{cart.get_total_price}}</td>
-       </tr>
-      </tbody>
-  </table>
-<a href="{% url 'orders:checkout' %}" class="btn btn-primary">Checkout</a>
+        </tbody>
+    </table>
+    <a href="{% url 'orders:checkout' %}" class="btn btn-primary">Checkout</a>
+    <script>
+            const len = document.getElementById('len')
+            const total_price = document.getElementById('total_price')
+            const len_selected =document.getElementById('len_selected')
+             const img = document.getElementById('img')
+            const name = document.getElementById('name')
+            const price = document.getElementById('price')
+            const numbers = document.getElementById('numbers')
+            const total_cart = document.getElementById('total_cart')
+            const total_product_price = document.getElementById('total_product_price')
+            const products = ''
+        async function add_to_cart(event, el, product) {
+                event.preventDefault();
+                const response = await fetch("/api/v1/cart/plus_to_cart/", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pk: product.id,
+                        name: product.name,
+                        price: "2000",
+                        discounted_price: "2000",
+                        quantity: "1"
+                    })
+                });
+
+                if (response.status === 200) {
+                    const productObject = await response.json();
+                    console.log(productObject);
+                    len.innerText = productObject.len
+                    total_price.innerText = productObject.total_price
+                    total_cart.innerText = productObject.total_price
+                    len_selected.innerText = productObject.len
+                    total_product_price.innerText = productObject.total_price_product;
+                    const numbers = el.previousElementSibling;
+                    let currentNumber = parseInt(numbers.innerText);
+                    if (currentNumber <parseInt(productObject.inventory)){
+                        currentNumber += 1;
+                    }
+                    numbers.innerText = currentNumber.toString();
+                    {#const totalProductPrice = el.previousElementSibling;#}
+
+                    {#loadCartItems();#}
+                } else if (response.status === 406) {
+                    alert("The cart is empty");
+                } else if (response.status === 400) {
+                    alert("Quantity exceeds inventory");
+                } else {
+                    alert("Something went wrong");
+                }
+            }
+        async function remove_from_cart(event, el, product) {
+                event.preventDefault();
+                const response = await fetch("/api/v1/cart/remove_from_cart/", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pk: product.id,
+                        name: product.name,
+                        price: "2000",
+                        discounted_price: "2000",
+                        quantity: "1"
+                    })
+                });
+
+                if (response.status === 200) {
+                    const productObject = await response.json();
+                    console.log(productObject);
+                    len.innerText = productObject.len
+                    total_price.innerText = productObject.total_price
+                    total_cart.innerText = productObject.total_price
+                    len_selected.innerText = productObject.len
+                    total_product_price.innerText = productObject.total_price_product;
+                    const numbers = el.nextElementSibling;
+                    let currentNumber = parseInt(numbers.innerText);
+                    if (currentNumber>1){
+                         currentNumber -= 1;
+                    }
+
+                    numbers.innerText = currentNumber.toString();
+                    {#const totalProductPrice = el.previousElementSibling;#}
+
+                    {#loadCartItems();#}
+                } else if (response.status === 406) {
+                    alert("The cart is empty");
+                } else if (response.status === 400) {
+                    alert("Quantity exceeds inventory");
+                } else {
+                    alert("Something went wrong");
+                }
+            }
+
+
+
+
+
+
+        // Initial load of cart items
+        {#loadCartItems();#}
+    </script>
 {% endblock %}

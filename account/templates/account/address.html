@@ -8,7 +8,6 @@
     <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Name</th>
           <th scope="col">City</th>
           <th scope="col">Country</th>
           <th scope="col">Street</th>
@@ -20,7 +19,6 @@
         {% for item in object_list %}
         <tr>
           <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ item.user.username }}</td>
           <td>{{ item.city }}</td>
           <td>{{ item.country }}</td>
           <td>{{ item.street }}</td>
@@ -37,24 +35,60 @@
   </table>
 {% comment %} <a href="{% url 'order:checkout' %}" class="btn btn-primary">Checkout</a> {% endcomment %}
 <div class="pagination">
-  <span class="step-links">
-    {% if page_obj.has_previous %}
-      <li><a href="?page=1">&laquo; first</a></li>
-{#            <a href="?page=1">&laquo; first</a>#}
-      <li><a href="?page={{ page_obj.previous_page_number }}">pre</a></li>
-{#            <a href="?page={{ page_obj.previous_page_number }}">previous</a>#}
-    {% endif %}
+    <span class="step-links">
+        {% if addresses.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ addresses.previous_page_number }}">pre</a>
+        {% endif %}
 
-    <span class="current">
-      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        <span class="current">
+            Page {{ addresses.number }} of {{ addresses.paginator.num_pages }}.
+        </span>
+
+        {% if addresses.has_next %}
+            <a href="?page={{ addresses.next_page_number }}">next</a>
+            <a href="?page={{ addresses.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
     </span>
-
-    {% if page_obj.has_next %}
-      <li><a href="?page={{ page_obj.next_page_number }}">next</a></li>
-{#            <a href="?page={{ page_obj.next_page_number }}">next</a>#}
-      <li><a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a></li>
-{#            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>#}
-    {% endif %}
-  </span>
 </div>
+     <script>
+            {#const len = document.getElementById('len')#}
+            {#const total_price = document.getElementById('total_price')#}
+            {#const len_selected =document.getElementById('len_selected')#}
+            {# const img = document.getElementById('img')#}
+            {#const name = document.getElementById('name')#}
+            const price = document.getElementById('price')
+            async function add_to_cart(event, el, product) {
+                event.preventDefault();
+                const response = await fetch("/api/v1/cart/add_to_cart/", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pk: product.id, // Use the product.id as pk
+                        name: product.name, // Use the product.name as name
+                        price: "2000",
+                        discounted_price: "2000",
+                        quantity: "1"
+                    })
+                });
+
+                if (response.status === 200) {
+                    const productObject = await response.json(); // Assuming the response contains the product object
+                    console.log(productObject); // Log the product object to the console
+                    alert("Added to cart");
+                    len.innerText = productObject.len
+                    total_price.innerText = productObject.total_price
+                    len_selected.innerText = productObject.len
+                    {#name.innerText = productObject.cart_shop#}
+                } else if (response.status === 406) {
+                    alert("The cart is empty");
+                } else if (response.status === 400) {
+                    alert("Quantity exceeds inventory");
+                } else {
+                    alert("Something went wrong");
+                }
+            }
+        </script>
 {% endblock %}

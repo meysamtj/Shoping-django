@@ -22,7 +22,7 @@
         {% for item in object_list %}
         <tr>
           <th scope="row">{{ forloop.counter }}</th>
-          <td> <a href='{% url 'orders:order_item' item.id %}'>{{ item.created_at }}</a></td>
+          <td><a href='{% url 'api:order_items' item.id %}'>{{ item.created_at }}</a></td>
           <td>{{ item.total }}</td>
           {% if item.is_paid %}
             <td>Done</td>

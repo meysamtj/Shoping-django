@@ -29,7 +29,7 @@
 											<h5 class="card-title text-warning "> <p class="text-center">{{item.country}}</p></h5>
 											<p class="card-text text-secondary">{{item.city}}</p>
 											<p class="card-text text-secondary">{{item.street}}</p>
-											<button class="btn btn-success" type="button" onclick="document.getElementById('demo').innerHTML = '{{item.street}}'">Select</button>
+											<button class="btn btn-success" type="button" onclick="document.getElementById('demo').innerHTML = '{{item.street}}'" id="btn-success">Select</button>
 										</div>
 										</div>
 									</div>
@@ -142,7 +142,7 @@
 							</div>
 						</div>
 						
-						<a href="{% url 'orders:create_order' %}" class="primary-btn order-submit">Place order</a>
+						<a href="{% url 'orders:create_order' %}" class="primary-btn order-submit" id="order-submit" style=" pointer-events: none;" >Place order</a>
 					</div>
 					<!-- /Order Details -->
 				</div>
@@ -173,5 +173,15 @@
                alert("wrong proccess")
             }
         }
-        </script>
+    </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const btnsubmit = document.getElementById('btn-success');
+        const orderSubmitButton = document.getElementById('order-submit');
+
+        btnsubmit.addEventListener('click', function(event) {
+            document.getElementById("order-submit").style.pointerEvents = "auto";
+        });
+    });
+</script>
 {%endblock%}
